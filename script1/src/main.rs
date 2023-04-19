@@ -170,3 +170,42 @@ fn main() {
         false => println!("El sistema no es planificable"),
     }
 }
+
+// ==== [ TESTS ] ====
+#[test]
+fn general_test_1() {
+    let mut my_tasks = CyclicScheduler::new();
+    my_tasks.add_task(5.0, 20, 20).unwrap();
+    my_tasks.add_task(5.0, 20, 20).unwrap();
+    my_tasks.add_task(10.0, 40, 40).unwrap();
+    assert!(my_tasks.is_schedulable());
+}
+
+#[test]
+fn general_test_2() {
+    let mut my_tasks = CyclicScheduler::new();
+    my_tasks.add_task(2.0, 6, 6).unwrap();
+    my_tasks.add_task(2.0, 8, 8).unwrap();
+    my_tasks.add_task(8.0, 24, 24).unwrap();
+    assert!(!my_tasks.is_schedulable());
+}
+
+#[test]
+fn general_test_3() {
+    let mut my_tasks = CyclicScheduler::new();
+    my_tasks.add_task(2.0, 6, 6).unwrap();
+    my_tasks.add_task(2.0, 8, 8).unwrap();
+    my_tasks.add_task(4.0, 24, 24).unwrap();
+    my_tasks.add_task(4.0, 24, 24).unwrap();
+    assert!(!my_tasks.is_schedulable());
+}
+
+#[test]
+fn general_test_4() {
+    let mut my_tasks = CyclicScheduler::new();
+    my_tasks.add_task(5.0,  20, 20).unwrap();
+    my_tasks.add_task(10.0, 20, 20).unwrap();
+    my_tasks.add_task(10.0, 40, 40).unwrap();
+    assert!(my_tasks.is_schedulable());
+}
+
