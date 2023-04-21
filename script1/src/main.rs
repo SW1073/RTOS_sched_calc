@@ -77,35 +77,57 @@ impl CyclicScheduler {
      * Retorna si la tasca es planificable o no
      */
     fn is_schedulable(&self) -> bool {
+        // Check utilization factor
+        println!("# Busquem el factor d'utilitzacio");
         let u = self.get_utilization();
-        if u > 1.0 {return false};
+        println!("El factor d'utilitzacio U = {u}");
+        if u > 1.0 {
+            println!("! Com que U > 1.0, el sistema no es planificable.");
+            return false
+        };
+        println!("Com que U <= 1.0, continuem mirant condicions.");
 
         // Find the hyperperiod
         let hyper_period = self.get_hyperperiod();
-        println!("Hiperperiode: {hyper_period}");
+        println!("# L'hiperperiode H = {hyper_period}");
 
         // Secondary period
+        println!("# A continuació, trobem el periode secondari:");
         // Find max computing time
         let max_c = self.get_max_computing_time();
+        println!("El temps de comput màxim és: {max_c}");
         // Find min deadline time
         let min_d = self.get_min_deadline();
+        println!("El deadline mínim és: {min_d}");
         if max_c >= (min_d as f64) {
+            println!("! Com que el temps de comput màxim és major o igual que el mínim deadline, no es possible planificar aquest sistema actualment.");
             return false;
         }
+        println!("Com que el temps de comput màxim és menor que el mínim deadline, és possible trobar frames secuandaris en el rang.");
+
+        println!("De fet, gracies a la equivalencia H = k*Ts, sabem que:");
+        let kd = hyper_period/min_d;
+        let kc = (hyper_period as f64)/max_c;
+        println!("H = k*Ts = {kd} * {min_d} = {hyper_period}");
+        println!("H = k*Ts = {kc} * {max_c} = {hyper_period}");
 
         let mult: usize = CyclicScheduler::get_multiplier(max_c);
 
         // ⩝𝑖: 2𝑇𝑠 − gcd(𝑇𝑠, 𝑇𝑖) ≤ 𝐷𝑖
         // With both values of 𝑇𝑠
+        println!("# Trobem el frame secundari:");
         let tsd = min_d;
         let tsc = (max_c * mult as f64) as usize;
+        let mut i = 1;
         for t in self.tasks.iter() {
+            println!("Tasca numero {i}. ");
             if 2*tsd - gcd(tsd, t.get_period()) > t.get_deadline() {
                 return false; 
             }
             if 2*tsc - gcd(tsc, t.get_period()*mult) > t.get_deadline()*mult {
                 return false; 
             }
+            i += 1;
         }
 
         // return true if every check before was ok
@@ -160,9 +182,8 @@ impl CyclicScheduler {
 fn main() {
     let mut cs = CyclicScheduler::new();
     cs.add_task(1.0, 10, 10).unwrap();
-    cs.add_task(5.0, 10, 10).unwrap();
-    cs.add_task(4.0, 10, 10).unwrap();
     cs.add_task(1.0, 10, 10).unwrap();
+    cs.add_task(6.5, 10, 10).unwrap();
     dbg!(&cs);
 
     match cs.is_schedulable() {
