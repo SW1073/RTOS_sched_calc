@@ -1,8 +1,11 @@
 pub mod schedulers;
+pub mod log;
 mod task;
 
+use log::Log;
+
 pub enum SchedulabilityResult {
-    Schedulable,
-    NotSchedulable(String), // Reason why it is not schedulable
-    Undetermined,
+    Schedulable(Option<Log>),
+    NotSchedulable(Option<Log>),
+    Undetermined(Option<Log>),
 }

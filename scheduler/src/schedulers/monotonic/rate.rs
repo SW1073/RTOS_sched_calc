@@ -80,10 +80,8 @@ impl CheckSchedulable for RateMonotonicScheduler {
         self.assign_priorities();
         // Ha de complir una de les 3 condicions suficients
         match (self.check_sc1(), self.check_sc2(), self.check_rta()) {
-            (true, _, _) | (_, true, _) | (_, _, true) => SchedulabilityResult::Schedulable,
-            (false, _, _) => SchedulabilityResult::NotSchedulable(String::from("Sufficient Condition 1 not met")),
-            (_, false, _) => SchedulabilityResult::NotSchedulable(String::from("Sufficient Condition 2 not met")),
-            (_, _, false) => SchedulabilityResult::NotSchedulable(String::from("Response Time Analysis not met")),           
+            (true, _, _) | (_, true, _) | (_, _, true) => SchedulabilityResult::Schedulable(None),
+            (false, false, false) => SchedulabilityResult::NotSchedulable(None),
         }
     }
 }

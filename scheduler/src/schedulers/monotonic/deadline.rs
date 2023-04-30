@@ -84,8 +84,8 @@ impl CheckSchedulable for DeadlineMonotonicScheduler {
         self.assign_priorities();
         // Només cal que es compleixi l'RTA
         match self.check_rta() {
-            true => SchedulabilityResult::Schedulable,
-            false => SchedulabilityResult::NotSchedulable(String::from("Response time analysis not met")),
+            true => SchedulabilityResult::Schedulable(None),
+            false => SchedulabilityResult::NotSchedulable(None),
         }
     }
 }

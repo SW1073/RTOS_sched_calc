@@ -1,4 +1,5 @@
 use crate::SchedulabilityResult;
+use crate::log::Log;
 use crate::task::Task;
 use super::CheckSchedulable;
 use super::lcm;
@@ -65,43 +66,48 @@ impl CyclicScheduler {
  */
 impl CheckSchedulable for CyclicScheduler {
     fn is_schedulable(&mut self) -> SchedulabilityResult {
+        // Log per a guardar els events que ocorren
+        let mut log = Log::new();
+
         // Check utilization factor
         let u = self.get_utilization();
-        println!("El factor d'utilitzacio U = {u}");
+        log.add_info(format!("El factor d'utilitzacio U = {u:.2}"));
         if u > 1.0 {
-            println!("Com que U > 1.0, el sistema no es planificable.");
-            return SchedulabilityResult::NotSchedulable(String::from("Utilization factor > 1"));
+            log.add_error(format!("U > 1.0"));
+            return SchedulabilityResult::NotSchedulable(Some(log));
         };
-        println!("Com que U <= 1.0, continuem mirant condicions.");
+        log.add_event(format!("Com que U <= 1.0, continuem mirant condicions"));
 
         // Find the hyperperiod
         let hyper_period = self.get_hyperperiod();
-        println!("# L'hiperperiode H = {hyper_period}");
+        log.add_info(format!("L'hiperperiode H = {hyper_period}"));
 
         // Secondary period
-        println!("# A continuació, trobem el periode secundari:");
+        log.add_event(format!("# A continuació, trobem el periode secundari:"));
+
         // Find max computing time
         let max_c = self.get_max_computing_time();
-        println!("El temps de comput màxim és: {max_c}");
+        log.add_info(format!("El temps de comput màxim és: {max_c}"));
         // Find min deadline time
         let min_d = self.get_min_deadline();
-        println!("El deadline mínim és: {min_d}");
+        log.add_info(format!("El deadline mínim és: {min_d}"));
         if max_c >= (min_d as f64) {
-            println!("! Com que el temps de comput màxim és major o igual que el mínim deadline, no es possible planificar aquest sistema actualment.");
-            return SchedulabilityResult::NotSchedulable(String::from("Minimum Deadline <= Maximum Computing Time")); // TODO: substitute by task partitioning
+            log.add_event(format!("Com que el temps de comput màxim és major o igual que el mínim deadline, no es possible planificar aquest sistema actualment."));
+            log.add_error(format!("Minimum Deadline <= Maximum Computing Time"));
+            return SchedulabilityResult::NotSchedulable(Some(log)); // TODO: substitute by task partitioning
         }
-        println!("Com que el temps de comput màxim és menor que el mínim deadline, és possible trobar frames secuandaris en el rang.");
+        log.add_event(format!("Com que el temps de comput màxim és menor que el mínim deadline, és possible trobar frames secuandaris en el rang."));
 
-        println!("De fet, gracies a la equivalencia H = k*Ts, sabem que:");
+        log.add_info(format!("De fet, gracies a la equivalencia H = k*Ts, sabem que:"));
         let kd = hyper_period/min_d;
         let kc = (hyper_period as f64)/max_c;
-        println!("H = k*Ts = {kd} * {min_d} = {hyper_period}");
-        println!("H = k*Ts = {kc} * {max_c} = {hyper_period}");
+        log.add_info(format!("H = k*Ts = {kd:.2} * {min_d:.2} = {hyper_period}"));
+        log.add_info(format!("H = k*Ts = {kc:.2} * {max_c:.2} = {hyper_period}"));
 
         // TODO: Cal trobar un layout de les tasques sobre el hyper_period i els secondary period.
 
         // return true if every check before was ok
-        SchedulabilityResult::Schedulable
+        SchedulabilityResult::Schedulable(Some(log))
     }
     
 }
