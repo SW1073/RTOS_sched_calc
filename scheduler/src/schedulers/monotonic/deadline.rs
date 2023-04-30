@@ -1,6 +1,9 @@
-use crate::schedulers::{
-    CheckSchedulable,
-    SchedulabilityResult,
+use crate::{
+    schedulers::{
+        CheckSchedulable,
+        SchedulabilityResult,
+    },
+    log::Log
 };
 use super::{
     Task,
@@ -15,6 +18,7 @@ use super::{
 pub struct DeadlineMonotonicScheduler {
     // With associated priority
     tasks: Vec<(Option<usize>,Task)>,
+    log: Log,
 }
 
 
@@ -26,6 +30,7 @@ impl DeadlineMonotonicScheduler {
     pub fn new() -> Self {
         DeadlineMonotonicScheduler {
             tasks: vec![],
+            log: Log::new(),
         }
     }
 
@@ -80,12 +85,24 @@ impl CheckRTA for DeadlineMonotonicScheduler {}
 
 impl CheckSchedulable for DeadlineMonotonicScheduler {
     fn is_schedulable(&mut self) -> SchedulabilityResult {
+        
+        self.log.add_event(format!("Igualem els multiplicadors"));
         self.equal_multipliers();
+
+        self.log.add_event(format!("Asignem prioritats a les tasques"));
         self.assign_priorities();
+
         // Només cal que es compleixi l'RTA
+        self.log.add_event(format!("Comprovem el Response Time Analysis."));
         match self.check_rta() {
-            true => SchedulabilityResult::Schedulable(None),
-            false => SchedulabilityResult::NotSchedulable(None),
+            true => {
+                self.log.add_event(format!("El Response Time Analysis es compleix"));
+                SchedulabilityResult::Schedulable(Some(self.log.clone()))
+            },
+            false => {
+                self.log.add_error(format!("El Response Time Analysis no es compleix"));
+                SchedulabilityResult::NotSchedulable(Some(self.log.clone()))
+            },
         }
     }
 }
