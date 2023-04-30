@@ -1,9 +1,11 @@
 use scheduler::schedulers::{
     cyclic::CyclicScheduler,
+    monotonic::deadline::DeadlineMonotonicScheduler,
+    monotonic::rate::RateMonotonicScheduler,
     CheckSchedulable
 };
 
-fn print_is_schedulable(sched: &mut impl CheckSchedulable) {
+fn print_is_schedulable(sched: &mut dyn CheckSchedulable) {
     match sched.is_schedulable() {
         true => println!("El sistema SI es planificable"),
         false => println!("El sistema NO es planificable"),
@@ -11,7 +13,7 @@ fn print_is_schedulable(sched: &mut impl CheckSchedulable) {
 }
 
 fn main() {
-    let mut sched = CyclicScheduler::new();
+    let mut sched = RateMonotonicScheduler::new();
     sched.add_task(1.0, 10, 10).unwrap();
     sched.add_task(1.0, 10, 10).unwrap();
     sched.add_task(1.0, 10, 10).unwrap();
