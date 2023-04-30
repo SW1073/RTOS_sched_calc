@@ -1,4 +1,7 @@
-use crate::schedulers::CheckSchedulable;
+use crate::schedulers::{
+    CheckSchedulable,
+    SchedulabilityResult,
+};
 use super::{
     Task,
     GetTasksMut, 
@@ -76,10 +79,13 @@ impl AssignPriorities for DeadlineMonotonicScheduler {
 impl CheckRTA for DeadlineMonotonicScheduler {}
 
 impl CheckSchedulable for DeadlineMonotonicScheduler {
-    fn is_schedulable(&mut self) -> bool {
+    fn is_schedulable(&mut self) -> SchedulabilityResult {
         self.equal_multipliers();
         self.assign_priorities();
         // Només cal que es compleixi l'RTA
-        return self.check_rta()
+        match self.check_rta() {
+            true => SchedulabilityResult::Schedulable,
+            false => SchedulabilityResult::NotSchedulable(String::from("Response time analysis not met")),
+        }
     }
 }

@@ -1,4 +1,7 @@
-use crate::schedulers::CheckSchedulable;
+use crate::schedulers::{
+    CheckSchedulable,
+    SchedulabilityResult,
+};
 use super::{
     Task,
     GetTasksMut,
@@ -72,10 +75,15 @@ impl CheckSC2 for RateMonotonicScheduler {}
 impl CheckRTA for RateMonotonicScheduler {}
 
 impl CheckSchedulable for RateMonotonicScheduler {
-    fn is_schedulable(&mut self) -> bool {
+    fn is_schedulable(&mut self) -> SchedulabilityResult {
         self.equal_multipliers();
         self.assign_priorities();
         // Ha de complir una de les 3 condicions suficients
-        return self.check_sc1() || self.check_sc2() || self.check_rta();
+        match (self.check_sc1(), self.check_sc2(), self.check_rta()) {
+            (true, _, _) | (_, true, _) | (_, _, true) => SchedulabilityResult::Schedulable,
+            (false, _, _) => SchedulabilityResult::NotSchedulable(String::from("Sufficient Condition 1 not met")),
+            (_, false, _) => SchedulabilityResult::NotSchedulable(String::from("Sufficient Condition 2 not met")),
+            (_, _, false) => SchedulabilityResult::NotSchedulable(String::from("Response Time Analysis not met")),           
+        }
     }
 }
