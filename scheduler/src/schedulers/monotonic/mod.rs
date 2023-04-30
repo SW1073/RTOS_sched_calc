@@ -5,11 +5,24 @@ pub use crate::task::Task;
 pub mod deadline;
 pub mod rate;
 
+trait GetTasksMut {
+    fn get_tasks_mut(&mut self) -> std::slice::IterMut<'_, (Option<usize>, Task)>;
+}
+
+trait GetTasks {
+    fn get_tasks(&self) -> &Vec<(Option<usize>, Task)>;
+}
+
 /**
  * Iguala els multiplicadors de totes les tasques del sistema
  */
-trait EqualMultipliers {
-    fn equal_multipliers(&mut self);
+trait EqualMultipliers : GetTasksMut{
+    fn equal_multipliers(&mut self) {
+        let max = self.get_tasks_mut().map(|a| a.1.get_multiplier()).max().unwrap_or(0);
+        for t in self.get_tasks_mut() {
+            t.1.set_multiplier(max);
+        }
+    }
 }
 
 /**
@@ -22,9 +35,7 @@ trait AssignPriorities {
 /**
  * Check the sufficient condition 1.
  */
-trait CheckSC1 {
-    fn get_tasks(&self) -> &Vec<(Option<usize>, Task)>;
-
+trait CheckSC1 : GetTasks {
     fn check_sc1 (&mut self) -> bool {
         let u_total: f64 = self.get_tasks().iter().map(|t|t.1.get_utilization()).sum();
         let n: f64 = self.get_tasks().len() as f64;
@@ -35,9 +46,7 @@ trait CheckSC1 {
 /**
  * Check the sufficient condition 2 over self.
  */
-trait CheckSC2 {
-    fn get_tasks(&self) -> &Vec<(Option<usize>, Task)>;
-
+trait CheckSC2 : GetTasks {
     fn check_sc2(&self) -> bool {
         let sc2: f64 = self.get_tasks().iter().map(|t|(t.1.get_utilization())+1.0).product();
         return sc2 <= 2.0;
@@ -48,9 +57,7 @@ trait CheckSC2 {
  * Check the response time analysis of self,
  * and return wether it succeded or not.
  */
-trait CheckRTA {
-    fn get_tasks(&self) -> &Vec<(Option<usize>, Task)>;
-
+trait CheckRTA : GetTasks {
     fn check_rta(&self) -> bool {
         println!("===== RTA check =====");
         let mut prev_tasks: Vec<(usize,usize)> = vec![]; // Detalls de les tasks amb mes prioritat que la actual

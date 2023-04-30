@@ -1,9 +1,11 @@
 use crate::schedulers::CheckSchedulable;
 use super::{
     Task,
+    GetTasksMut, 
+    GetTasks,
     EqualMultipliers,
     AssignPriorities,
-    CheckRTA
+    CheckRTA,
 };
 
 #[derive(Debug)]
@@ -33,6 +35,17 @@ impl DeadlineMonotonicScheduler {
     }
 }
 
+impl GetTasksMut for DeadlineMonotonicScheduler {
+    fn get_tasks_mut(&mut self) -> std::slice::IterMut<'_, (Option<usize>, Task)> {
+        self.tasks.iter_mut()
+    }
+}
+
+impl GetTasks for DeadlineMonotonicScheduler {
+    fn get_tasks(&self) -> &Vec<(Option<usize>, Task)> {
+        return &self.tasks;
+    }
+}
 
 // Deixem la implementacio default per a igualar els multiplicadors
 impl EqualMultipliers for DeadlineMonotonicScheduler {
@@ -58,11 +71,9 @@ impl AssignPriorities for DeadlineMonotonicScheduler {
     }
 }
 
-impl CheckRTA for DeadlineMonotonicScheduler {
-    fn get_tasks(&self) -> &Vec<(Option<usize>, Task)> {
-        return &self.tasks;
-    }
-}
+// Implementacions default de les diferents funcions de checking
+// (Només el RTA és necesari en aquest cas)
+impl CheckRTA for DeadlineMonotonicScheduler {}
 
 impl CheckSchedulable for DeadlineMonotonicScheduler {
     fn is_schedulable(&mut self) -> bool {

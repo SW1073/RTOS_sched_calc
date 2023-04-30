@@ -1,6 +1,8 @@
 use crate::schedulers::CheckSchedulable;
 use super::{
     Task,
+    GetTasksMut,
+    GetTasks,
     EqualMultipliers,
     AssignPriorities,
     CheckSC1,
@@ -35,16 +37,20 @@ impl RateMonotonicScheduler {
     }
 }
 
-
-// Deixem la implementacio default per a igualar els multiplicadors
-impl EqualMultipliers for RateMonotonicScheduler {
-    fn equal_multipliers(&mut self) {
-        let max = self.tasks.iter().map(|a| a.1.get_multiplier()).max().unwrap_or(0);
-        for t in self.tasks.iter_mut() {
-            t.1.set_multiplier(max);
-        }
+impl GetTasksMut for RateMonotonicScheduler {
+    fn get_tasks_mut(&mut self) -> std::slice::IterMut<'_, (Option<usize>, Task)> {
+        self.tasks.iter_mut()
     }
 }
+
+impl GetTasks for RateMonotonicScheduler {
+    fn get_tasks(&self) -> &Vec<(Option<usize>, Task)> {
+        return &self.tasks;
+    }
+}
+
+// Deixem la implementacio default per a igualar els multiplicadors
+impl EqualMultipliers for RateMonotonicScheduler { }
 
 // Assignem prioritats al scheduler
 impl AssignPriorities for RateMonotonicScheduler {
@@ -60,22 +66,10 @@ impl AssignPriorities for RateMonotonicScheduler {
     }
 }
 
-
-impl CheckSC1 for RateMonotonicScheduler {
-    fn get_tasks(&self) -> &Vec<(Option<usize>, Task)> {
-        return &self.tasks;
-    }
-}
-impl CheckSC2 for RateMonotonicScheduler {
-    fn get_tasks(&self) -> &Vec<(Option<usize>, Task)> {
-        return &self.tasks;
-    }
-}
-impl CheckRTA for RateMonotonicScheduler {
-    fn get_tasks(&self) -> &Vec<(Option<usize>, Task)> {
-        return &self.tasks;
-    }
-}
+// Implementacions default de les diferents funcions de checking
+impl CheckSC1 for RateMonotonicScheduler {}
+impl CheckSC2 for RateMonotonicScheduler {}
+impl CheckRTA for RateMonotonicScheduler {}
 
 impl CheckSchedulable for RateMonotonicScheduler {
     fn is_schedulable(&mut self) -> bool {
