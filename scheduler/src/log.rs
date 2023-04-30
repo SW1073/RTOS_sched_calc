@@ -3,12 +3,14 @@
 
 use colored::Colorize;
 
+#[derive(Debug, Clone)]
 enum LogEntry {
     Info(String),
     Event(String),
     Error(String),
 }
 
+#[derive(Debug, Clone)]
 pub struct Log {
     events: Vec<LogEntry>,
 }

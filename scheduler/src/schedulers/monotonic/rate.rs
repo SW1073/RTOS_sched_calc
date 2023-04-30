@@ -1,7 +1,7 @@
-use crate::schedulers::{
+use crate::{schedulers::{
     CheckSchedulable,
     SchedulabilityResult,
-};
+}, log::Log};
 use super::{
     Task,
     GetTasksMut,
@@ -17,6 +17,7 @@ use super::{
 pub struct RateMonotonicScheduler {
     // With associated priority
     tasks: Vec<(Option<usize>,Task)>,
+    log: Log,
 }
 
 
@@ -28,6 +29,7 @@ impl RateMonotonicScheduler {
     pub fn new() -> Self {
         RateMonotonicScheduler {
             tasks: vec![],
+            log: Log::new(),
         }
     }
 
@@ -76,12 +78,36 @@ impl CheckRTA for RateMonotonicScheduler {}
 
 impl CheckSchedulable for RateMonotonicScheduler {
     fn is_schedulable(&mut self) -> SchedulabilityResult {
+        // Reiniciem el log
+        self.log = Log::new();
+
+        self.log.add_event(format!("Igualem els multiplicadors"));
         self.equal_multipliers();
+        
+        self.log.add_event(format!("Asignem prioritats a les tasques"));
         self.assign_priorities();
-        // Ha de complir una de les 3 condicions suficients
-        match (self.check_sc1(), self.check_sc2(), self.check_rta()) {
-            (true, _, _) | (_, true, _) | (_, _, true) => SchedulabilityResult::Schedulable(None),
-            (false, false, false) => SchedulabilityResult::NotSchedulable(None),
+
+        self.log.add_event(format!("Comprovem la Sufficient Condition 1"));
+        if self.check_sc1() {
+            self.log.add_event(format!("La Sufficient condition 1 es compleix"));
+            return SchedulabilityResult::Schedulable(Some(self.log.clone()));
         }
+        self.log.add_error(format!("La Sufficient Condition 1 ha fallat"));
+        
+        self.log.add_event(format!("Comprovem la Sufficient Condition 2"));
+        if self.check_sc2() {
+            self.log.add_event(format!("La Sufficient Condition 2 es compleix"));
+            return SchedulabilityResult::NotSchedulable(Some(self.log.clone()));
+        }
+        self.log.add_error(format!("La Sufficient Condition 2 ha fallat"));
+
+        self.log.add_event(format!("Comprovem el Response Time Analysis."));
+        if self.check_rta() {
+            self.log.add_event(format!("El Response Time Analysis es compleix"));
+            return SchedulabilityResult::Schedulable(Some(self.log.clone()));
+        }
+        self.log.add_error(format!("El Response Time Analysis ha fallat"));
+        
+        SchedulabilityResult::NotSchedulable(Some(self.log.clone()))
     }
 }
