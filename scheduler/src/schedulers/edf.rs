@@ -90,8 +90,12 @@ impl EarliestDeadlineFirstScheduler {
             let mut l = t.get_deadline();
             while (l as f64) <= min_h_l_star {
                     let mut g0l: f64 = 0.0;
+                    let mut dbg_j = 0;
                     for tsk in self.tasks.iter() {
-                        g0l += ((l + t.get_period() - tsk.get_deadline()) / tsk.get_period()) as f64 * tsk.get_computing_time();
+                        dbg_j += 1;
+                        let tmp_g0l= (((l + t.get_period()) as isize - tsk.get_deadline() as isize) as usize / tsk.get_period()) as f64 * tsk.get_computing_time();
+                        log.add_error(format!("El g0l de la tasca {dbg_j} quan L = {l} és: {tmp_g0l}"));
+                        g0l += tmp_g0l;
                     }
                     log.add_info(format!("g(0,L) = {g0l} | "));
                     log.append_to_last_entry(format!("L = {l}"));

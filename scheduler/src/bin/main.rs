@@ -48,9 +48,9 @@ fn main() {
 
     // Check schedulability
     let mut sched = EarliestDeadlineFirstScheduler::new();
-    sched.add_task(2.0, 4, 6).unwrap();
-    sched.add_task(2.0, 5, 8).unwrap();
-    sched.add_task(3.0, 7, 9).unwrap();
+    sched.add_task(10.0, 20, 30).unwrap();
+    sched.add_task(20.0, 55, 70).unwrap();
+    sched.add_task(20.0, 60, 100).unwrap();
 
     print_is_schedulable(&mut sched);
 
