@@ -11,7 +11,6 @@ use super::{
     CheckSC1,
     CheckSC2,
     CheckRTA, 
-    LogFunctionalities,
 };
 
 #[derive(Debug)]
@@ -55,11 +54,6 @@ impl GetTasks for RateMonotonicScheduler {
     }
 }
 
-impl LogFunctionalities for RateMonotonicScheduler {
-    fn log_append(&mut self, log_to_append: Log) {
-        self.log.append_log(log_to_append);
-    }
-}
 
 // Deixem la implementacio default per a igualar els multiplicadors
 impl EqualMultipliers for RateMonotonicScheduler { }
@@ -88,26 +82,23 @@ impl CheckSchedulable for RateMonotonicScheduler {
         self.log.add_event(format!("Asignem prioritats a les tasques"));
         self.sort_n_assign();
 
-        self.log.add_event(format!("Comprovem la Sufficient Condition 1"));
-        if self.check_sc1() {
-            self.log.add_event(format!("La Sufficient condition 1 es compleix"));
+        let (result, log) = self.check_sc1();
+        self.log.append_log(log);
+        if result {
             return SchedulabilityResult::Schedulable(Some(self.log.clone()));
         }
-        self.log.add_error(format!("La Sufficient Condition 1 ha fallat"));
         
-        self.log.add_event(format!("Comprovem la Sufficient Condition 2"));
-        if self.check_sc2() {
-            self.log.add_event(format!("La Sufficient Condition 2 es compleix"));
-            return SchedulabilityResult::NotSchedulable(Some(self.log.clone()));
-        }
-        self.log.add_error(format!("La Sufficient Condition 2 ha fallat"));
-
-        self.log.add_event(format!("Comprovem el Response Time Analysis."));
-        if self.check_rta() {
-            self.log.add_event(format!("El Response Time Analysis es compleix"));
+        let (result, log) = self.check_sc2();
+        self.log.append_log(log);
+        if result {
             return SchedulabilityResult::Schedulable(Some(self.log.clone()));
         }
-        self.log.add_error(format!("El Response Time Analysis ha fallat"));
+
+        let (result, log) = self.check_rta();
+        self.log.append_log(log);
+        if result {
+            return SchedulabilityResult::Schedulable(Some(self.log.clone()));
+        }
 
         SchedulabilityResult::NotSchedulable(Some(self.log.clone()))
     }

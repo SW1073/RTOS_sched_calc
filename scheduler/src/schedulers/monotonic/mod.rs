@@ -16,10 +16,6 @@ trait GetTasks {
     fn get_tasks(&self) -> &Vec<(Option<usize>, Task)>;
 }
 
-trait LogFunctionalities {
-    fn log_append(&mut self, log_to_append: Log);
-}
-
 /**
  * Iguala els multiplicadors de totes les tasques del sistema
  */
@@ -57,28 +53,46 @@ trait AssignPriorities : GetTasksMut + GetTasks {
 /**
  * Check the sufficient condition 1.
  */
-trait CheckSC1 : GetTasks + LogFunctionalities {
-    fn check_sc1 (&mut self) -> bool {
-        let mut log = Log::new();
+trait CheckSC1 : GetTasks {
+    fn check_sc1 (&mut self) -> (bool, Log) {
+        // Càlculs
         let u_total: f64 = self.get_tasks().iter().map(|t|t.1.get_utilization()).sum();
         let n: f64 = self.get_tasks().len() as f64;
         let right_side = n*(((2f64).powf(1f64/n)) - 1f64);
+        let result = u_total <= right_side;
+        // Log
+        let mut log = Log::new();
+        log.add_event(format!("Comprovem la Sufficient Condition 1"));
         log.add_info(format!("{u_total:.2} <= {right_side:.2}??"));
-        self.log_append(log);
-        return u_total <= right_side;
+        if result {
+            log.add_event(format!("La Sufficient Condition 2 es compleix"));
+        }
+        else {
+            log.add_error(format!("La Sufficient Condition 1 ha fallat"));
+        }
+        return (result, log);
     }
 }
 
 /**
  * Check the sufficient condition 2 over self.
  */
-trait CheckSC2 : GetTasks + LogFunctionalities {
-    fn check_sc2(&mut self) -> bool {
+trait CheckSC2 : GetTasks {
+    fn check_sc2(&mut self) -> (bool, Log) {
+        // Càlculs
         let sc2: f64 = self.get_tasks().iter().map(|t|(t.1.get_utilization())+1.0).product();
+        let result = sc2 <= 2.0;
+        // Log
         let mut log = Log::new();
+        log.add_event(format!("Comprovem la Sufficient Condition 2"));
         log.add_info(format!("{sc2:.2} <= 2.0 ??"));
-        self.log_append(log);
-        return sc2 <= 2.0;
+        if result {
+            log.add_event(format!("La Sufficient Condition 2 es compleix"));
+        }
+        else {
+            log.add_error(format!("La Sufficient Condition 2 ha fallat"));
+        }
+        return (result, log);
     }
 }
 
@@ -86,10 +100,11 @@ trait CheckSC2 : GetTasks + LogFunctionalities {
  * Check the response time analysis of self,
  * and return wether it succeded or not.
  */
-trait CheckRTA : GetTasks + LogFunctionalities {
-    fn check_rta(&mut self) -> bool {
+trait CheckRTA : GetTasks {
+    fn check_rta(&mut self) -> (bool, Log) {
         // Log local i temporal, que posteriorment serà aefgit al log de l'scheduler
         let mut log = Log::new();
+        log.add_event(format!("Comprovem el Response Time Analysis."));
 
         let mut prev_tasks: Vec<(usize,usize)> = vec![]; // Detalls de les tasks amb mes prioritat que la actual
         for t in self.get_tasks() {
@@ -111,8 +126,8 @@ trait CheckRTA : GetTasks + LogFunctionalities {
                 log.add_info(format!(" W:{w} <= D:{d}?"));
                 if w > d { // El sistema no es planificable, no complim el RTA
                     log.add_error(format!("NO! W és més gran que D! RTA falla"));
-                    self.log_append(log);
-                    return false; 
+                    log.add_error(format!("El Response Time Analysis ha fallat"));
+                    return (false, log); 
                 } else { log.append_to_last_entry(format!(" SI")) }
 
                 if prev_ws.contains(&w) { // Ens ha sortit 2 cops el mateix valor, aquesta tasca compleix el RTA
@@ -129,7 +144,7 @@ trait CheckRTA : GetTasks + LogFunctionalities {
         }
         // Si hem arribat aqui, totes les tasques comleixen el RTA i el sistema SI que es planificable
         log.add_event(format!("Totes les tasques compleixen el RTA!"));
-        self.log_append(log);
-        true
+        log.add_event(format!("El Response Time Analysis es compleix"));
+        (true, log)
     }
 }
