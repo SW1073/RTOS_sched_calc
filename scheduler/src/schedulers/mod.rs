@@ -1,6 +1,7 @@
 // Exposem els diferents schedulers per a que puguin ser utilitzats fora del crate.
 pub mod cyclic;
 pub mod monotonic;
+pub mod edf;
 
 // Import global per a que tots els membres d'aquest modul puguin usar lcm i gcd.
 pub use num::integer::{lcm, gcd};

@@ -6,6 +6,7 @@ use scheduler::
         deadline::DeadlineMonotonicScheduler,
         rate::RateMonotonicScheduler,
     },
+    edf::EarliestDeadlineFirstScheduler,
     SchedulabilityResult::{
         Schedulable as Schedulable,
         NotSchedulable as NotSchedulable,
@@ -46,14 +47,10 @@ fn main() {
     // Input Number of Tasks
 
     // Check schedulability
-    let mut sched = RateMonotonicScheduler::new();
-    sched.add_task(1.0, 10, 10).unwrap();
-    sched.add_task(1.0, 10, 10).unwrap();
-    sched.add_task(1.0, 10, 10).unwrap();
-    sched.add_task(1.0, 10, 10).unwrap();
-    sched.add_task(1.0, 10, 10).unwrap();
-    sched.add_task(1.0, 10, 10).unwrap();
-    sched.add_task(10.0, 40, 40).unwrap();
+    let mut sched = EarliestDeadlineFirstScheduler::new();
+    sched.add_task(2.0, 4, 6).unwrap();
+    sched.add_task(2.0, 5, 8).unwrap();
+    sched.add_task(3.0, 7, 9).unwrap();
 
     print_is_schedulable(&mut sched);
 
