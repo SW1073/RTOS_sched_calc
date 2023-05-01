@@ -11,7 +11,7 @@ use super::{
     GetTasks,
     EqualMultipliers,
     AssignPriorities,
-    CheckRTA,
+    CheckRTA, LogFunctionalities,
 };
 
 #[derive(Debug)]
@@ -79,12 +79,19 @@ impl AssignPriorities for DeadlineMonotonicScheduler {
     }
 }
 
+impl LogFunctionalities for DeadlineMonotonicScheduler {
+    fn log_append(&mut self, log_to_append: Log) {
+        self.log.append_log(log_to_append);
+    }
+}
+
 // Implementacions default de les diferents funcions de checking
 // (Només el RTA és necesari en aquest cas)
 impl CheckRTA for DeadlineMonotonicScheduler {}
 
 impl CheckSchedulable for DeadlineMonotonicScheduler {
     fn is_schedulable(&mut self) -> SchedulabilityResult {
+        self.log = Log::new();
         
         self.log.add_event(format!("Igualem els multiplicadors"));
         self.equal_multipliers();

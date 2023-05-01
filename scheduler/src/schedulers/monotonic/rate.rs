@@ -10,7 +10,8 @@ use super::{
     AssignPriorities,
     CheckSC1,
     CheckSC2,
-    CheckRTA
+    CheckRTA, LogFunctionalities,
+
 };
 
 #[derive(Debug)]
@@ -51,6 +52,12 @@ impl GetTasksMut for RateMonotonicScheduler {
 impl GetTasks for RateMonotonicScheduler {
     fn get_tasks(&self) -> &Vec<(Option<usize>, Task)> {
         return &self.tasks;
+    }
+}
+
+impl LogFunctionalities for RateMonotonicScheduler {
+    fn log_append(&mut self, log_to_append: Log) {
+        self.log.append_log(log_to_append);
     }
 }
 
@@ -107,7 +114,7 @@ impl CheckSchedulable for RateMonotonicScheduler {
             return SchedulabilityResult::Schedulable(Some(self.log.clone()));
         }
         self.log.add_error(format!("El Response Time Analysis ha fallat"));
-        
+
         SchedulabilityResult::NotSchedulable(Some(self.log.clone()))
     }
 }

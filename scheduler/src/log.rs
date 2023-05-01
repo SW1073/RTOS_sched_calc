@@ -34,6 +34,10 @@ impl Log {
         self.events.push(LogEntry::Error(event));
     }
 
+    pub fn append_log(&mut self, log_to_append: Log) {
+        self.events.append(&mut log_to_append.get_events().clone());
+    }
+
     pub fn print_log(&self) {
         for e in self.events.iter() {
             match e {
@@ -42,5 +46,9 @@ impl Log {
                 LogEntry::Error(t) => println!("{}", t.red()),
             }
         }
+    }
+
+    fn get_events(&self) -> &Vec<LogEntry> {
+        &self.events
     }
 }
