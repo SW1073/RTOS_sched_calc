@@ -46,14 +46,14 @@ fn main() {
     // Input Number of Tasks
 
     // Check schedulability
-    let mut sched = CyclicScheduler::new();
+    let mut sched = RateMonotonicScheduler::new();
     sched.add_task(1.0, 10, 10).unwrap();
     sched.add_task(1.0, 10, 10).unwrap();
     sched.add_task(1.0, 10, 10).unwrap();
     sched.add_task(1.0, 10, 10).unwrap();
     sched.add_task(1.0, 10, 10).unwrap();
     sched.add_task(1.0, 10, 10).unwrap();
-    sched.add_task(6.0, 40, 40).unwrap();
+    sched.add_task(10.0, 40, 40).unwrap();
 
     print_is_schedulable(&mut sched);
 

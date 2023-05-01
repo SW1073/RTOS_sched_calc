@@ -33,6 +33,15 @@ impl Log {
     pub fn add_error(&mut self, event: String) {
         self.events.push(LogEntry::Error(event));
     }
+    
+    pub fn append_to_last_entry(&mut self, addition: String) {
+        let last_entry_mut_ref = self.events.last_mut().unwrap();
+        match last_entry_mut_ref {
+            LogEntry::Info(c) => { *last_entry_mut_ref = LogEntry::Info(format!("{c}{addition}"))},
+            LogEntry::Event(c) => { *last_entry_mut_ref = LogEntry::Event(format!("{c}{addition}"))},
+            LogEntry::Error(c) => { *last_entry_mut_ref = LogEntry::Error(format!("{c}{addition}"))},
+        }
+    }
 
     pub fn append_log(&mut self, log_to_append: Log) {
         self.events.append(&mut log_to_append.get_events().clone());

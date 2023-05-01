@@ -10,8 +10,8 @@ use super::{
     AssignPriorities,
     CheckSC1,
     CheckSC2,
-    CheckRTA, LogFunctionalities,
-
+    CheckRTA, 
+    LogFunctionalities,
 };
 
 #[derive(Debug)]
@@ -66,15 +66,9 @@ impl EqualMultipliers for RateMonotonicScheduler { }
 
 // Assignem prioritats al scheduler
 impl AssignPriorities for RateMonotonicScheduler {
-    fn assign_priorities(&mut self) {
-        // Sort vector
+    // Les altres dues funcions usen la implementació default
+    fn sort_tasks(&mut self) {
         self.tasks.sort_by(|a,b| a.1.get_period().cmp(&b.1.get_period()));
-        // Set priorities based on their position in the ordered vector
-        let mut i = self.tasks.len();
-        for t in self.tasks.iter_mut() {
-            t.0 = Some(i);
-            i-=1;
-        }
     }
 }
 
@@ -92,7 +86,7 @@ impl CheckSchedulable for RateMonotonicScheduler {
         self.equal_multipliers();
         
         self.log.add_event(format!("Asignem prioritats a les tasques"));
-        self.assign_priorities();
+        self.sort_n_assign();
 
         self.log.add_event(format!("Comprovem la Sufficient Condition 1"));
         if self.check_sc1() {

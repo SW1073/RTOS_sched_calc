@@ -7,16 +7,17 @@ use crate::{
 };
 use super::{
     Task,
-    GetTasksMut, 
+    GetTasksMut,
     GetTasks,
     EqualMultipliers,
     AssignPriorities,
-    CheckRTA, LogFunctionalities,
+    CheckRTA,
+    LogFunctionalities,
 };
 
 #[derive(Debug)]
 pub struct DeadlineMonotonicScheduler {
-    // With associated priority
+    // Tasks With associated priority
     tasks: Vec<(Option<usize>,Task)>,
     log: Log,
 }
@@ -67,15 +68,10 @@ impl EqualMultipliers for DeadlineMonotonicScheduler {
 
 // Assignem prioritats al scheduler
 impl AssignPriorities for DeadlineMonotonicScheduler {
-    fn assign_priorities(&mut self) {
-        // Sort vector
+    // Les dues altres funcions les derivem de la implementació default
+    fn sort_tasks(&mut self) {
+        // Ordenem les tasques de més a menys prioritaria
         self.tasks.sort_by(|a,b| a.1.get_deadline().cmp(&b.1.get_deadline()));
-        // Set priorities based on their position in the ordered vector
-        let mut i = self.tasks.len();
-        for t in self.tasks.iter_mut() {
-            t.0 = Some(i);
-            i-=1;
-        }
     }
 }
 
@@ -97,7 +93,7 @@ impl CheckSchedulable for DeadlineMonotonicScheduler {
         self.equal_multipliers();
 
         self.log.add_event(format!("Asignem prioritats a les tasques"));
-        self.assign_priorities();
+        self.sort_n_assign();
 
         // Només cal que es compleixi l'RTA
         self.log.add_event(format!("Comprovem el Response Time Analysis."));

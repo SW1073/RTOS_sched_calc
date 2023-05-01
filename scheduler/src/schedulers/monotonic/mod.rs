@@ -23,7 +23,7 @@ trait LogFunctionalities {
 /**
  * Iguala els multiplicadors de totes les tasques del sistema
  */
-trait EqualMultipliers : GetTasksMut{
+trait EqualMultipliers : GetTasksMut {
     fn equal_multipliers(&mut self) {
         let max = self.get_tasks_mut().map(|a| a.1.get_multiplier()).max().unwrap_or(0);
         for t in self.get_tasks_mut() {
@@ -35,27 +35,49 @@ trait EqualMultipliers : GetTasksMut{
 /**
  * Asigna prioritats a totes les tasques del sistema
  */
-trait AssignPriorities {
-    fn assign_priorities(&mut self); // No default implementation
+trait AssignPriorities : GetTasksMut + GetTasks {
+    fn sort_n_assign(&mut self) {
+        self.sort_tasks();
+        self.assign_priorities();
+    }
+
+    fn assign_priorities(&mut self) {
+        // Set priorities based on their position in the ordered vector
+        let mut i = self.get_tasks().len();
+        for t in self.get_tasks_mut() {
+            t.0 = Some(i);
+            i-=1;
+        }
+    }
+
+    // Dependent on every implementation
+    fn sort_tasks(&mut self);
 }
 
 /**
  * Check the sufficient condition 1.
  */
-trait CheckSC1 : GetTasks {
+trait CheckSC1 : GetTasks + LogFunctionalities {
     fn check_sc1 (&mut self) -> bool {
+        let mut log = Log::new();
         let u_total: f64 = self.get_tasks().iter().map(|t|t.1.get_utilization()).sum();
         let n: f64 = self.get_tasks().len() as f64;
-        return u_total <=  n*(((2f64).powf(1f64/n)) - 1f64);
+        let right_side = n*(((2f64).powf(1f64/n)) - 1f64);
+        log.add_info(format!("{u_total:.2} <= {right_side:.2}??"));
+        self.log_append(log);
+        return u_total <= right_side;
     }
 }
 
 /**
  * Check the sufficient condition 2 over self.
  */
-trait CheckSC2 : GetTasks {
-    fn check_sc2(&self) -> bool {
+trait CheckSC2 : GetTasks + LogFunctionalities {
+    fn check_sc2(&mut self) -> bool {
         let sc2: f64 = self.get_tasks().iter().map(|t|(t.1.get_utilization())+1.0).product();
+        let mut log = Log::new();
+        log.add_info(format!("{sc2:.2} <= 2.0 ??"));
+        self.log_append(log);
         return sc2 <= 2.0;
     }
 }
@@ -86,17 +108,16 @@ trait CheckRTA : GetTasks + LogFunctionalities {
                     break;
                 } 
 
-                log.add_info(format!("W:{w} <= D:{d}?"));
-                
+                log.add_info(format!(" W:{w} <= D:{d}?"));
                 if w > d { // El sistema no es planificable, no complim el RTA
                     log.add_error(format!("NO! W és més gran que D! RTA falla"));
                     self.log_append(log);
                     return false; 
-                } else { log.add_info(format!("SI")) }
+                } else { log.append_to_last_entry(format!(" SI")) }
 
                 if prev_ws.contains(&w) { // Ens ha sortit 2 cops el mateix valor, aquesta tasca compleix el RTA
                     prev_tasks.push((t.1.get_period_mult(), t.1.get_computing_time_mult()));
-                    log.add_info(format!("W apareix 2 cops, pasem a seguent task!"));
+                    log.append_to_last_entry(format!(" W apareix 2 cops, pasem a seguent task!"));
                     break;
                 } 
 
