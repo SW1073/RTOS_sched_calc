@@ -64,7 +64,7 @@ impl CyclicScheduler {
         let mut new_tasks: Vec<Task> = vec![];
         for t in self.tasks.iter_mut() {
             if t.get_computing_time() == max_c {
-                log.add_info(format!("1 tasca ({}, {}, {}) trobada per a dividir", t.get_computing_time(), t.get_deadline(), t.get_period()));
+                log.add_info(format!("-> Tasca ({}, {}, {}) trobada per a dividir", t.get_computing_time(), t.get_deadline(), t.get_period()));
                 let new_task = t.divide_task();
                 log.add_info(format!("Tasca dividida: ({}, {}, {})", t.get_computing_time(), t.get_deadline(), t.get_period()));
                 new_tasks.push(new_task);
