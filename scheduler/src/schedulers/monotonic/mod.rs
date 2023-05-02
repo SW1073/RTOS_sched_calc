@@ -123,12 +123,12 @@ trait CheckRTA : GetTasks {
                     break;
                 } 
 
-                log.add_info(format!(" W:{w} <= D:{d}?"));
+                log.add_info(format!(" W:{w} <= D:{d}??"));
                 if w > d { // El sistema no es planificable, no complim el RTA
                     log.add_error(format!("NO! W és més gran que D! RTA falla"));
                     log.add_error(format!("El Response Time Analysis ha fallat"));
                     return (false, log); 
-                } else { log.append_to_last_entry(format!(" SI")) }
+                } else { log.append_to_last_entry(format!(" --> SI")) }
 
                 if prev_ws.contains(&w) { // Ens ha sortit 2 cops el mateix valor, aquesta tasca compleix el RTA
                     prev_tasks.push((t.1.get_period_mult(), t.1.get_computing_time_mult()));
