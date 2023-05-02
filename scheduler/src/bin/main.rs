@@ -63,7 +63,7 @@ fn main() {
     let mut period: usize;
     let mut input_line: String;
     println!("Introdueix el computing_time, deadline i periode separats per espais per a cada tasca a continuació:");
-    for _n in 0..num_tasks {
+    for _n in 1..num_tasks+1 {
         println!("-- Tasca {_n} --");
         input_line = input!("-> ");
         let input_line_split: Vec<&str> = input_line.split(' ').collect();
