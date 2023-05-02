@@ -55,6 +55,47 @@ impl CyclicScheduler {
     fn get_min_deadline(&self) -> usize {
         return self.tasks.iter().map(|t| t.get_deadline()).min_by(|a, b| a.cmp(&b)).unwrap_or(0);
     }
+
+    /**
+     * Busca les tasques amb max_c computing time i les divideix en 2 subtasques
+     */
+    fn divide_tasks(&mut self, max_c: f64) -> Log {
+        let mut log = Log::new();
+        let mut new_tasks: Vec<Task> = vec![];
+        for t in self.tasks.iter_mut() {
+            if t.get_computing_time() == max_c {
+                log.add_info(format!("1 tasca ({}, {}, {}) trobada per a dividir", t.get_computing_time(), t.get_deadline(), t.get_period()));
+                let new_task = t.divide_task();
+                log.add_info(format!("Tasca dividida: ({}, {}, {})", t.get_computing_time(), t.get_deadline(), t.get_period()));
+                new_tasks.push(new_task);
+            }
+        }
+        self.tasks.append(&mut new_tasks);
+        log
+    }
+
+    /**
+     * Divideix i comprova la feasibility de les tasques tants cops com sigui necesari.
+     * (Fins que max_comp_time < min_deadline)
+     */
+    fn divide_n_conquer(&mut self) -> (f64, usize, Log) {
+        let mut log = Log::new();
+
+        let max_c = self.get_max_computing_time();
+        let min_d = self.get_min_deadline();
+
+        log.add_info(format!("El temps de comput màxim és: {max_c}"));
+        log.add_info(format!("El deadline mínim és: {min_d}"));
+        if max_c >= (min_d as f64) {
+            log.add_error(format!("Minimum Deadline <= Maximum Computing Time"));
+            log.add_event(format!("Dividim totes les tasques amb max Computing Time"));
+            let log_divide = self.divide_tasks(max_c);
+            log.append_log(log_divide);
+            let (_,_,log_next_it) = self.divide_n_conquer(); // Recursiva, kinda(?)
+            log.append_log(log_next_it);
+        }
+        (max_c, min_d, log)
+    }
 }
 
 // Interface per a assegurar a l'usuari que implementem unes certes funcions
@@ -85,17 +126,11 @@ impl CheckSchedulable for CyclicScheduler {
         log.add_event(format!("A continuació, trobem el periode secundari:"));
 
         // Find max computing time
-        let max_c = self.get_max_computing_time();
-        log.add_info(format!("El temps de comput màxim és: {max_c}"));
-        // Find min deadline time
-        let min_d = self.get_min_deadline();
-        log.add_info(format!("El deadline mínim és: {min_d}"));
-        if max_c >= (min_d as f64) {
-            log.add_error(format!("Minimum Deadline <= Maximum Computing Time"));
-            return SchedulabilityResult::NotSchedulable(Some(log)); // TODO: substitute by task partitioning
-        }
+        let (max_c, min_d, log_dnc) = self.divide_n_conquer();
+        log.append_log(log_dnc);
         log.add_event(format!("Com que el temps de comput màxim és menor que el mínim deadline, és possible trobar frames secuandaris en el rang."));
 
+        //(?????)
         log.add_info(format!("De fet, gracies a la equivalencia H = k*Ts, sabem que:"));
         let kd = hyper_period/min_d;
         let kc = (hyper_period as f64)/max_c;

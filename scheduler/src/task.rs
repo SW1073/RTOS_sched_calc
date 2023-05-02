@@ -9,7 +9,7 @@
 /**
  * Data model d'una tasca en si
  */
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Task {
     computing_time: f64,
     deadline: usize,
@@ -103,6 +103,13 @@ impl Task {
         self.period * self.multiplier as usize
     }
 
+    /**
+     * Divideix la tasca en 2. Es modifica a si mateixa i en retorna la nova tasca, amb computing_time/2
+     */
+    pub fn divide_task(&mut self) -> Task {
+        self.computing_time /= 2.0;
+        self.clone()
+    }
 }
 
 /**
