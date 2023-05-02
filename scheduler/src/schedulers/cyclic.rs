@@ -75,14 +75,14 @@ impl CheckSchedulable for CyclicScheduler {
             log.add_error(format!("U > 1.0"));
             return SchedulabilityResult::NotSchedulable(Some(log));
         };
-        log.add_event(format!("Com que U <= 1.0, continuem mirant condicions"));
+        log.add_event(format!("U <= 1.0: continuem mirant condicions"));
 
         // Find the hyperperiod
         let hyper_period = self.get_hyperperiod();
-        log.add_info(format!("L'hiperperiode H = {hyper_period}"));
+        log.add_info(format!("Hiperperiode H = {hyper_period}"));
 
         // Secondary period
-        log.add_event(format!("# A continuació, trobem el periode secundari:"));
+        log.add_event(format!("A continuació, trobem el periode secundari:"));
 
         // Find max computing time
         let max_c = self.get_max_computing_time();
@@ -91,7 +91,6 @@ impl CheckSchedulable for CyclicScheduler {
         let min_d = self.get_min_deadline();
         log.add_info(format!("El deadline mínim és: {min_d}"));
         if max_c >= (min_d as f64) {
-            log.add_event(format!("Com que el temps de comput màxim és major o igual que el mínim deadline, no es possible planificar aquest sistema actualment."));
             log.add_error(format!("Minimum Deadline <= Maximum Computing Time"));
             return SchedulabilityResult::NotSchedulable(Some(log)); // TODO: substitute by task partitioning
         }
