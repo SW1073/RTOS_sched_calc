@@ -57,6 +57,9 @@ impl CyclicScheduler {
     }
 }
 
+// Interface per a assegurar a l'usuari que implementem unes certes funcions
+impl SchedulerInterface for CyclicScheduler {}
+
 /**
  * Implementació del common trait IsSchedulable, que conté la funció is_schedulable()
  */
@@ -119,5 +122,3 @@ impl AddTaskCapabilities for CyclicScheduler {
         Ok(()) 
     }
 }
-
-impl SchedulerInterface for CyclicScheduler {}

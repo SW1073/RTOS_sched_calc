@@ -17,18 +17,6 @@ trait GetTasks {
 }
 
 /**
- * Iguala els multiplicadors de totes les tasques del sistema
- */
-trait EqualMultipliers : GetTasksMut {
-    fn equal_multipliers(&mut self) {
-        let max = self.get_tasks_mut().map(|a| a.1.get_multiplier()).max().unwrap_or(0);
-        for t in self.get_tasks_mut() {
-            t.1.set_multiplier(max);
-        }
-    }
-}
-
-/**
  * Asigna prioritats a totes les tasques del sistema
  */
 trait AssignPriorities : GetTasksMut + GetTasks {
@@ -62,14 +50,7 @@ trait CheckSC1 : GetTasks {
         let result = u_total <= right_side;
         // Log
         let mut log = Log::new();
-        log.add_event(format!("Comprovem la Sufficient Condition 1"));
-        log.add_info(format!("{u_total:.2} <= {right_side:.2}??"));
-        if result {
-            log.add_event(format!("La Sufficient Condition 2 es compleix"));
-        }
-        else {
-            log.add_error(format!("La Sufficient Condition 1 ha fallat"));
-        }
+        log.add_info(format!("{u_total:.2} <= {right_side:.2} ??"));
         return (result, log);
     }
 }
@@ -84,14 +65,7 @@ trait CheckSC2 : GetTasks {
         let result = sc2 <= 2.0;
         // Log
         let mut log = Log::new();
-        log.add_event(format!("Comprovem la Sufficient Condition 2"));
         log.add_info(format!("{sc2:.2} <= 2.0 ??"));
-        if result {
-            log.add_event(format!("La Sufficient Condition 2 es compleix"));
-        }
-        else {
-            log.add_error(format!("La Sufficient Condition 2 ha fallat"));
-        }
         return (result, log);
     }
 }
@@ -104,47 +78,43 @@ trait CheckRTA : GetTasks {
     fn check_rta(&mut self) -> (bool, Log) {
         // Log local i temporal, que posteriorment serà aefgit al log de l'scheduler
         let mut log = Log::new();
-        log.add_event(format!("Comprovem el Response Time Analysis."));
 
-        let mut prev_tasks: Vec<(usize,usize)> = vec![]; // Detalls de les tasks amb mes prioritat que la actual
-        for t in self.get_tasks() {
-            log.add_event(format!("----- Task a evaluar: {} -----", t.0.unwrap()));
-            let d = t.1.get_deadline_mult();
+        let mut prev_tasks: Vec<(f64,f64)> = vec![]; // Detalls de les tasks amb mes prioritat que la actual
+        for (priority, task) in self.get_tasks() {
+            log.add_event(format!("----- Task a evaluar: {} -----", priority.unwrap()));
+            let d = task.get_deadline();
             let mut w; // El W(n) actual
-            let mut prev_w = 0; // El W(n-1)
-            let mut prev_ws: Vec<usize> = vec![]; // Els W calculats previament
+            let mut prev_ws: Vec<f64> = vec![]; // Els W calculats previament
             loop {
                 // El calcul principal del RTA
-                w = t.1.get_computing_time_mult() + prev_tasks.iter().map(|tsk|((prev_w/tsk.0)+(if prev_w%tsk.0 == 0{0}else{1}))*tsk.1).sum::<usize>();
-                log.add_info(format!("--- Current w: {} --- ", w));
+                w = task.get_computing_time() +
+                    prev_tasks.iter().map(|(t_period, t_computing_time)|
+                                          ((prev_ws.last().unwrap_or(&0f64) / t_period).ceil()) * t_computing_time).sum::<f64>();
                 // La tasca mes prioritaria només necesita w <= d
-                if (t.0.unwrap_or(0) == self.get_tasks().len()) && (w <= d) { // Es la primers tasca, no cal comprovar res més
-                    prev_tasks.push((t.1.get_period_mult(), t.1.get_computing_time_mult()));
+                if (priority.unwrap_or(0) == self.get_tasks().len()) && (w <= d as f64) { // Es la primers tasca, no cal comprovar res més
+                    prev_tasks.push((task.get_period() as f64, task.get_computing_time()));
                     break;
                 } 
 
                 log.add_info(format!(" W:{w} <= D:{d}??"));
-                if w > d { // El sistema no es planificable, no complim el RTA
+                if w > d as f64 { // El sistema no es planificable, no complim el RTA
                     log.add_error(format!("NO! W és més gran que D! RTA falla"));
-                    log.add_error(format!("El Response Time Analysis ha fallat"));
                     return (false, log); 
                 } else { log.append_to_last_entry(format!(" --> SI")) }
 
                 if prev_ws.contains(&w) { // Ens ha sortit 2 cops el mateix valor, aquesta tasca compleix el RTA
-                    prev_tasks.push((t.1.get_period_mult(), t.1.get_computing_time_mult()));
+                    prev_tasks.push((task.get_period() as f64, task.get_computing_time()));
                     log.append_to_last_entry(format!(" W apareix 2 cops, pasem a seguent task!"));
                     break;
                 } 
 
                 // Necesari per fer calculs a la seguent iteracio
-                prev_w = w;
                 prev_ws.push(w);
             }
             // Si hem arribat aqui, la tasca actual compleix el RTA
         }
         // Si hem arribat aqui, totes les tasques comleixen el RTA i el sistema SI que es planificable
         log.add_event(format!("Totes les tasques compleixen el RTA!"));
-        log.add_event(format!("El Response Time Analysis es compleix"));
         (true, log)
     }
 }
