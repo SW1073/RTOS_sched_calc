@@ -61,11 +61,15 @@ fn main() {
     let mut computing_time: f64;
     let mut deadline: usize;
     let mut period: usize;
+    let mut input_line: String;
+    println!("Introdueix el computing_time, deadline i periode separats per espais per a cada tasca a continuació:");
     for _n in 0..num_tasks {
         println!("-- Tasca {_n} --");
-        computing_time = input!("Temps de cómput: ").parse::<f64>().unwrap();
-        deadline = input!("Deadline: ").parse::<usize>().unwrap();
-        period = input!("Periode: ").parse::<usize>().unwrap();
+        input_line = input!("-> ");
+        let input_line_split: Vec<&str> = input_line.split(' ').collect();
+        computing_time = input_line_split[0].parse::<f64>().unwrap();
+        deadline = input_line_split[1].parse::<usize>().unwrap();
+        period = input_line_split[2].parse::<usize>().unwrap();
         sched.add_task(computing_time, deadline, period).unwrap();
     }
 
