@@ -1,5 +1,8 @@
 use num::integer::lcm;
-use super::CheckSchedulable;
+use super::{
+    CheckSchedulable,
+    AddTaskCapabilities, SchedulerInterface,
+};
 use crate::{
     SchedulabilityResult,
     log::Log,
@@ -82,6 +85,9 @@ impl EarliestDeadlineFirstScheduler {
         if min_h_l_star == l_star { log.add_info(format!("L* <= Hyperperiod. Usem L*")); }
         else { log.add_info(format!("Hyperperiod <= L*. Usem Hyperperiod")); }
 
+        // Form vector or all the absolute deadlines and the associated tasks (to calculate wether
+        // the processor is overloaded or not g(0,L);
+
         // Form vector of all possible L values
         let mut i = 0;
         for t in self.tasks.iter() {
@@ -145,3 +151,17 @@ impl CheckSchedulable for EarliestDeadlineFirstScheduler {
         }
     }
 }
+
+impl AddTaskCapabilities for EarliestDeadlineFirstScheduler {
+    fn add_task(&mut self, computing_time: f64, deadline: usize, period: usize) -> Result<(), String> {
+        // Error checking
+        if period < deadline { return Err(String::from("Period < Deadline")); }
+        if computing_time < 0.0 { return Err(String::from("Computing Time < 0")) }
+
+        // Really adding the task
+        self.tasks.push(Task::new(computing_time, deadline, period));
+        Ok(()) 
+    }
+}
+
+impl SchedulerInterface for EarliestDeadlineFirstScheduler {}

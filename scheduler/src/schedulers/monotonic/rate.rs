@@ -1,5 +1,7 @@
 use crate::{schedulers::{
     CheckSchedulable,
+    AddTaskCapabilities,
+    SchedulerInterface,
     SchedulabilityResult,
 }, log::Log};
 use super::{
@@ -103,3 +105,17 @@ impl CheckSchedulable for RateMonotonicScheduler {
         SchedulabilityResult::NotSchedulable(Some(self.log.clone()))
     }
 }
+
+impl AddTaskCapabilities for RateMonotonicScheduler {
+    fn add_task(&mut self, computing_time: f64, deadline: usize, period: usize) -> Result<(), String> {
+        // Error checking
+        if period < deadline { return Err(String::from("Period < Deadline")); }
+        if computing_time < 0.0 { return Err(String::from("Computing Time < 0")) }
+
+        // Really adding the task
+        self.tasks.push((None, Task::new(computing_time, deadline, period)));
+        Ok(()) 
+    }
+}
+
+impl SchedulerInterface for RateMonotonicScheduler {}

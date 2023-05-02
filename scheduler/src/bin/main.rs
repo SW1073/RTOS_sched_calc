@@ -1,22 +1,36 @@
-use scheduler::
-{
+use scheduler::{
     schedulers::{
-    cyclic::CyclicScheduler,
-    monotonic::{
-        deadline::DeadlineMonotonicScheduler,
-        rate::RateMonotonicScheduler,
-    },
-    edf::EarliestDeadlineFirstScheduler,
-    SchedulabilityResult::{
-        Schedulable as Schedulable,
-        NotSchedulable as NotSchedulable,
-        Undetermined as Undetermined,
-    },
-    CheckSchedulable
-},
-log::Log,
-};
+        // Schedulers available
+        cyclic::CyclicScheduler,
+        monotonic::{
+            deadline::DeadlineMonotonicScheduler,
+            rate::RateMonotonicScheduler,
+        },
+        edf::EarliestDeadlineFirstScheduler,
 
+        // Results the schedulers is_planable() can return
+        SchedulabilityResult::{
+            Schedulable as Schedulable,
+            NotSchedulable as NotSchedulable,
+            Undetermined as Undetermined,
+        },
+
+        // Interface que ens asegura que un scheduler implementa is_schedulable() i add_task()
+        SchedulerInterface,
+    },
+
+    // Funcionalitats per a manegar el logs
+    log::Log,
+};
+// Per a fer input fàcil
+use input_macro::input;
+
+// Per a fer exit(-1) quan hi hagi un error.
+use std::process::exit;
+
+/**
+ * Imprimeix el log en cas que hi hagi
+ */
 fn print_if_log(log: Option<Log>) {
     match log {
         Some(l) => {println!("Log:"); l.print_log()},
@@ -24,7 +38,38 @@ fn print_if_log(log: Option<Log>) {
     }
 }
 
-fn print_is_schedulable(sched: &mut dyn CheckSchedulable) {
+fn main() {
+    // Input Scheduler Type
+    println!("Schedulers disponibles:");
+    println!("1. C   -> Cíclic");
+    println!("2. RM  -> Rate Monotnic");
+    println!("3. DM  -> Deadline Monotonic");
+    println!("4. EDF -> Eadrliest Deadline First");
+    let sched_type = input!("Quin scheduler vols utilitzar?\n").to_lowercase();
+    let mut sched = match sched_type.trim() {
+        "1" | "c" => Box::new(CyclicScheduler::new()) as Box<dyn SchedulerInterface>,
+        "2" | "rm" => Box::new(RateMonotonicScheduler::new()) as Box<dyn SchedulerInterface>,
+        "3" | "dm" => Box::new(DeadlineMonotonicScheduler::new()) as Box<dyn SchedulerInterface>,
+        "4" | "edf" => Box::new(EarliestDeadlineFirstScheduler::new()) as Box<dyn SchedulerInterface>,
+        _ => {println!("Scheduler invàlid"); exit(-1);},
+    };
+
+    // Input Number of Tasks
+    let num_tasks = input!("Quantes tasques vols afegir a l'scheduler?\n").parse::<usize>().unwrap();
+
+    // Input and add such tasks
+    let mut computing_time: f64;
+    let mut deadline: usize;
+    let mut period: usize;
+    for _n in 0..num_tasks {
+        println!("-- Tasca {_n} --");
+        computing_time = input!("Temps de cómput: ").parse::<f64>().unwrap();
+        deadline = input!("Deadline: ").parse::<usize>().unwrap();
+        period = input!("Periode: ").parse::<usize>().unwrap();
+        sched.add_task(computing_time, deadline, period).unwrap();
+    }
+
+    // Check schedulability and print results
     match sched.is_schedulable() {
         Schedulable(log) => {
             println!("El sistema SI es planificable");
@@ -39,19 +84,5 @@ fn print_is_schedulable(sched: &mut dyn CheckSchedulable) {
             print_if_log(log);
         }
     };
-}
-
-fn main() {
-    // Input Scheduler Type
-
-    // Input Number of Tasks
-
-    // Check schedulability
-    let mut sched = EarliestDeadlineFirstScheduler::new();
-    sched.add_task(10.0, 20, 30).unwrap();
-    sched.add_task(20.0, 55, 70).unwrap();
-    sched.add_task(20.0, 60, 100).unwrap();
-
-    print_is_schedulable(&mut sched);
 
 }

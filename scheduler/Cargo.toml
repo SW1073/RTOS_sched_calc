@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 colored = "2.0.0"
+input-macro = "0.2.0"
 num = "0.4.0"
