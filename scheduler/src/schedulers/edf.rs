@@ -98,8 +98,7 @@ impl EarliestDeadlineFirstScheduler {
                 // Calculem el g(0,L) en base a la L actual
                 let mut g0l: f64 = 0.0;
                 for tsk in self.tasks.iter() {
-                    let tmp_g0l = ( (l + tsk.get_period() - tsk.get_deadline()) / tsk.get_period() ) as f64 * tsk.get_computing_time();
-                    g0l += tmp_g0l;
+                    g0l += ( (l + tsk.get_period() - tsk.get_deadline()) / tsk.get_period() ) as f64 * tsk.get_computing_time();
                 }
                 log.add_info(format!("g(0,L) = {g0l} | L = {l}"));
 
