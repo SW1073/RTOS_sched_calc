@@ -49,7 +49,7 @@ impl AssignPriorities for DeadlineMonotonicScheduler {
     // Les dues altres funcions les derivem de la implementació default
     fn sort_tasks(&mut self) {
         // Ordenem les tasques de més a menys prioritaria
-        self.tasks.sort_by(|a,b| a.1.get_deadline().cmp(&b.1.get_deadline()));
+        self.tasks.sort_by(|(_,a),(_,b)| a.get_deadline().cmp(&b.get_deadline()));
     }
 }
 

@@ -44,7 +44,7 @@ trait AssignPriorities : GetTasksMut + GetTasks {
 trait CheckSC1 : GetTasks {
     fn check_sc1 (&mut self) -> (bool, Log) {
         // Càlculs
-        let u_total: f64 = self.get_tasks().iter().map(|t|t.1.get_utilization()).sum();
+        let u_total: f64 = self.get_tasks().iter().map(|(_priority, task)| task.get_utilization()).sum();
         let n: f64 = self.get_tasks().len() as f64;
         let right_side = n*(((2f64).powf(1f64/n)) - 1f64);
         let result = u_total <= right_side;
@@ -61,7 +61,7 @@ trait CheckSC1 : GetTasks {
 trait CheckSC2 : GetTasks {
     fn check_sc2(&mut self) -> (bool, Log) {
         // Càlculs
-        let sc2: f64 = self.get_tasks().iter().map(|t|(t.1.get_utilization())+1.0).product();
+        let sc2: f64 = self.get_tasks().iter().map(|(_priority, task)| (task.get_utilization())+1.0).product();
         let result = sc2 <= 2.0;
         // Log
         let mut log = Log::new();

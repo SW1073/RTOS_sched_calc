@@ -48,7 +48,7 @@ impl GetTasks for RateMonotonicScheduler {
 impl AssignPriorities for RateMonotonicScheduler {
     // Les altres dues funcions usen la implementació default
     fn sort_tasks(&mut self) {
-        self.tasks.sort_by(|a,b| a.1.get_period().cmp(&b.1.get_period()));
+        self.tasks.sort_by(|(_,a),(_,b)| a.get_period().cmp(&b.get_period()));
     }
 }
 
