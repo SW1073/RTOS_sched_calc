@@ -94,23 +94,23 @@ impl EarliestDeadlineFirstScheduler {
             i += 1;
             log.add_event(format!("------ Tasca número {i} ------"));
             let mut l = t.get_deadline();
-            while (l as f64) <= min_h_l_star {
-                    let mut g0l: f64 = 0.0;
-                    let mut dbg_j = 0;
-                    for tsk in self.tasks.iter() {
-                        dbg_j += 1;
-                        let tmp_g0l= (((l + t.get_period()) as isize - tsk.get_deadline() as isize) as usize / tsk.get_period()) as f64 * tsk.get_computing_time();
-                        log.add_error(format!("El g0l de la tasca {dbg_j} quan L = {l} és: {tmp_g0l}"));
-                        g0l += tmp_g0l;
-                    }
-                    log.add_info(format!("g(0,L) = {g0l} | "));
-                    log.append_to_last_entry(format!("L = {l}"));
-                    if g0l > (l as f64) {
-                        log.add_error(format!("g(0,L) > L. Falla el PDC"));
-                        return (false, log);
-                    }
-                    log.add_info(format!("g(0,L) <= L. Continuem"));
-                    l += t.get_period();
+            while l <= min_h_l_star.round() as usize {
+                // Calculem el g(0,L) en base a la L actual
+                let mut g0l: f64 = 0.0;
+                for tsk in self.tasks.iter() {
+                    let tmp_g0l = ( (l + tsk.get_period() - tsk.get_deadline()) / tsk.get_period() ) as f64 * tsk.get_computing_time();
+                    g0l += tmp_g0l;
+                }
+                log.add_info(format!("g(0,L) = {g0l} | L = {l}"));
+
+                // Trobem si es compleix g(0,L) <= l
+                if g0l > (l as f64) {
+                    log.add_error(format!("g(0,L) > L"));
+                    return (false, log);
+                }
+                log.add_info(format!("g(0,L) <= L. Continuem"));
+                // Augmentem la L actual en període
+                l += t.get_period();
             }
         }
         // If the  previous check did not return, the pdc succeeded
