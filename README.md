@@ -1,7 +1,7 @@
 # SCHEDULER CLI
 
 ## Usage
-En primer lloc, és necesari tenir una versió actualitzada del compilador de ![Rust](https://www.rust-lang.org/es/tools/install).
+En primer lloc, és necesari tenir una versió actualitzada del compilador de [Rust](https://www.rust-lang.org/es/tools/install).
 
 Un cop instalada, descarreguem o clonem el repositori. Dintre del repositori i de la carpeta scheduler, llancem la comanda ```cargo run```. Això possarà en marxa la aplicació amb les optimitzacions més baixes i amb informació de debugat. Si es dessitja i prefereix, es pot user la comanda ```cargo run --release``` per a optimitzar el binari resultant.
 
