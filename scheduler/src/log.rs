@@ -1,5 +1,5 @@
 // Log per a manegar els logs que pugui crear la execució del programa,
-// i treure'ls per pantalla quan l'usuari vulgui. En substitució del 
+// i treure'ls per pantalla quan l'usuari vulgui. En substitució del println!()
 
 use colored::Colorize;
 

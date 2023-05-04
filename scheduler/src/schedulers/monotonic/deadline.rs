@@ -1,18 +1,18 @@
 use crate::{
+    log::Log,
     schedulers::{
         CheckSchedulable,
         AddTaskCapabilities,
         SchedulabilityResult,
         SchedulerInterface,
+        monotonic::{
+            Task,
+            GetTasksMut,
+            GetTasks,
+            AssignPriorities,
+            CheckRTA,
+        },
     },
-    log::Log
-};
-use super::{
-    Task,
-    GetTasksMut,
-    GetTasks,
-    AssignPriorities,
-    CheckRTA,
 };
 
 #[derive(Debug)]

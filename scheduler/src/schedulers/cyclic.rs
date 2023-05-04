@@ -1,11 +1,13 @@
-use crate::SchedulabilityResult;
-use crate::log::Log;
-use crate::task::Task;
-use super::{
-    CheckSchedulable,
-    AddTaskCapabilities,
-    SchedulerInterface, 
-    lcm,
+use num::integer::lcm;
+use crate::{
+    log::Log,
+    task::Task,
+    schedulers::{
+        SchedulabilityResult,
+        CheckSchedulable,
+        AddTaskCapabilities,
+        SchedulerInterface, 
+    }
 };
 
 #[derive(Debug)]

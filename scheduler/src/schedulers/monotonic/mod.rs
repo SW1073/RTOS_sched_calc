@@ -1,7 +1,7 @@
-pub use super::CheckSchedulable;
 pub use crate::{
     task::Task,
     log::Log,
+    schedulers::CheckSchedulable,
 };
 
 // Exportem els moduls necesaris

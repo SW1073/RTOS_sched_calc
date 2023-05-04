@@ -1,12 +1,13 @@
 use num::integer::lcm;
-use super::{
-    CheckSchedulable,
-    AddTaskCapabilities, SchedulerInterface,
-};
 use crate::{
-    SchedulabilityResult,
     log::Log,
     task::Task,
+    schedulers::{
+        SchedulabilityResult,
+        CheckSchedulable,
+        AddTaskCapabilities,
+        SchedulerInterface,
+    }
 };
 
 pub struct EarliestDeadlineFirstScheduler {

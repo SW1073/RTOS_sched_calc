@@ -4,10 +4,12 @@ pub mod monotonic;
 pub mod edf;
 
 // Import global per a que tots els membres d'aquest modul puguin usar lcm i gcd.
-pub use num::integer::{lcm, gcd};
-
-// Import global per a que tots els membres d'aquest modul puguin usar els resultats d'schedulability
-pub use crate::SchedulabilityResult;
+use crate::log::Log;
+pub enum SchedulabilityResult {
+    Schedulable(Option<Log>),
+    NotSchedulable(Option<Log>),
+    Undetermined(Option<Log>),
+}
 
 
 // Traits que ens proporcionen la interfície del planificador
