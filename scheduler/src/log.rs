@@ -50,8 +50,8 @@ impl Log {
     pub fn print_log(&self) {
         for e in self.events.iter() {
             match e {
-                LogEntry::Info(t) => println!("{}", t.green()),
-                LogEntry::Event(t) => println!("{}", t.blue()),
+                LogEntry::Info(t) => println!("{}", t.blue()),
+                LogEntry::Event(t) => println!("{}", t.green()),
                 LogEntry::Error(t) => println!("{}", t.red()),
             }
         }
