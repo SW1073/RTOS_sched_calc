@@ -96,7 +96,7 @@ trait CheckRTA : GetTasks {
                     break;
                 } 
 
-                log.add_info(format!(" W:{w} <= D:{d}??"));
+                log.add_info(format!(" W:{w:.2} <= D:{d:.2}??"));
                 if w > d as f64 { // El sistema no es planificable, no complim el RTA
                     log.add_error(format!("NO! W és més gran que D! RTA falla"));
                     return (false, log); 
