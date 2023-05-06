@@ -83,8 +83,8 @@ impl CyclicScheduler {
     fn divide_n_conquer(&mut self) -> (f64, usize, Log) {
         let mut log = Log::new();
 
-        let max_c = self.get_max_computing_time();
-        let min_d = self.get_min_deadline();
+        let mut max_c = self.get_max_computing_time();
+        let mut min_d = self.get_min_deadline();
 
         log.add_info(format!("El temps de comput màxim és: {max_c}"));
         log.add_info(format!("El deadline mínim és: {min_d}"));
@@ -93,7 +93,9 @@ impl CyclicScheduler {
             log.add_event(format!("Dividim totes les tasques amb max Computing Time"));
             let log_divide = self.divide_tasks(max_c);
             log.append_log(log_divide);
-            let (_,_,log_next_it) = self.divide_n_conquer(); // Recursiva, kinda(?)
+            let (mc,md,log_next_it) = self.divide_n_conquer(); // Recursiva, kinda(?)
+            max_c = mc;
+            min_d = md;
             log.append_log(log_next_it);
         }
         (max_c, min_d, log)
@@ -132,7 +134,7 @@ impl CheckSchedulable for CyclicScheduler {
         log.append_log(log_dnc);
         log.add_event(format!("Com que el temps de comput màxim és menor que el mínim deadline, és possible trobar frames secuandaris en el rang."));
 
-        //(?????)
+        // Trobes les K per les que H=k*Ts
         log.add_info(format!("De fet, gracies a la equivalencia H = k*Ts, sabem que:"));
         let kd = hyper_period/min_d;
         let kc = (hyper_period as f64)/max_c;
