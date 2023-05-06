@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use num::integer::lcm;
 use crate::{
     log::Log,
@@ -86,33 +87,34 @@ impl EarliestDeadlineFirstScheduler {
         if min_h_l_star == l_star { log.add_info(format!("L* <= Hyperperiod. Usem L*")); }
         else { log.add_info(format!("Hyperperiod <= L*. Usem Hyperperiod")); }
 
-        // Form vector or all the absolute deadlines and the associated tasks (to calculate wether
-        // the processor is overloaded or not g(0,L);
-
-        // Form vector of all possible L values
-        let mut i = 0;
+        // Form vector or all the absolute deadlines and the associated tasks.
+        let mut abs_deadlines: Vec<usize> = vec![];
         for t in self.tasks.iter() {
-            i += 1;
-            log.add_event(format!("------ Tasca número {i} ------"));
             let mut l = t.get_deadline();
             while l <= min_h_l_star.round() as usize {
-                // Calculem el g(0,L) en base a la L actual
-                let mut g0l: f64 = 0.0;
-                for tsk in self.tasks.iter() {
-                    g0l += ( (l + tsk.get_period() - tsk.get_deadline()) / tsk.get_period() ) as f64 * tsk.get_computing_time();
-                }
-                log.add_info(format!("g(0,{l:.2}) = {g0l} <= {l}??"));
-
-                // Trobem si es compleix g(0,L) <= l
-                if g0l > (l as f64) {
-                    log.add_error(format!("g(0,L) > L"));
-                    return (false, log);
-                }
-                log.append_to_last_entry(format!(" --> SI"));
-                // Augmentem la L actual en període
+                abs_deadlines.push(l);
                 l += t.get_period();
             }
         }
+        abs_deadlines.sort();
+        abs_deadlines = abs_deadlines.iter().unique().map(|e|*e).collect();
+        log.add_info(format!("Els deadlines aboluts son: {abs_deadlines:?}"));
+
+        // Check for every L if g(0,L) <= L
+        for l in abs_deadlines {
+            let mut g0l: f64 = 0.0;
+            for tsk in self.tasks.iter() {
+                g0l += ( (l + tsk.get_period() - tsk.get_deadline()) / tsk.get_period() ) as f64 * tsk.get_computing_time();
+            }
+            log.add_info(format!("g(0,{l}) = {g0l:.2} <= {l}??"));
+            // Trobem si es compleix g(0,L) <= l
+            if g0l > (l as f64) {
+                log.add_error(format!("g(0,L) > L"));
+                return (false, log);
+            }
+            log.append_to_last_entry(format!(" --> SI"));
+        }
+
         // If the  previous check did not return, the pdc succeeded
         (true, log)
     }
