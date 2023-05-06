@@ -139,8 +139,6 @@ impl CheckSchedulable for CyclicScheduler {
         log.add_info(format!("H = k*Ts = {kd:.2} * {min_d:.2} = {hyper_period}"));
         log.add_info(format!("H = k*Ts = {kc:.2} * {max_c:.2} = {hyper_period}"));
 
-        // TODO: Cal trobar un layout de les tasques sobre el hyper_period i els secondary period.
-
         // return true if every check before was ok
         SchedulabilityResult::Schedulable(Some(log))
     }
