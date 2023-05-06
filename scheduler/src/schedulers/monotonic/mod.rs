@@ -90,17 +90,20 @@ trait CheckRTA : GetTasks {
                 w = task.get_computing_time() +
                     prev_tasks.iter().map(|(t_period, t_computing_time)|
                                           ((prev_ws.last().unwrap_or(&0f64) / t_period).ceil()) * t_computing_time).sum::<f64>();
+
+                log.add_info(format!(" W:{w:.2} <= D:{d:.2}??"));
+
                 // La tasca mes prioritaria només necesita w <= d
                 if (priority.unwrap_or(0) == self.get_tasks().len()) && (w <= d as f64) { // Es la primers tasca, no cal comprovar res més
                     prev_tasks.push((task.get_period() as f64, task.get_computing_time()));
+                    log.append_to_last_entry(format!(" --> SI"));
                     break;
                 } 
 
-                log.add_info(format!(" W:{w:.2} <= D:{d:.2}??"));
                 if w > d as f64 { // El sistema no es planificable, no complim el RTA
                     log.add_error(format!("NO! W és més gran que D! RTA falla"));
                     return (false, log); 
-                } else { log.append_to_last_entry(format!(" --> SI")) }
+                } else { log.append_to_last_entry(format!(" --> SI")); }
 
                 if prev_ws.contains(&w) { // Ens ha sortit 2 cops el mateix valor, aquesta tasca compleix el RTA
                     prev_tasks.push((task.get_period() as f64, task.get_computing_time()));
