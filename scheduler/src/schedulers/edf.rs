@@ -101,14 +101,14 @@ impl EarliestDeadlineFirstScheduler {
                 for tsk in self.tasks.iter() {
                     g0l += ( (l + tsk.get_period() - tsk.get_deadline()) / tsk.get_period() ) as f64 * tsk.get_computing_time();
                 }
-                log.add_info(format!("g(0,L) = {g0l} | L = {l}"));
+                log.add_info(format!("g(0,{l:.2}) = {g0l} <= {l}??"));
 
                 // Trobem si es compleix g(0,L) <= l
                 if g0l > (l as f64) {
                     log.add_error(format!("g(0,L) > L"));
                     return (false, log);
                 }
-                log.add_info(format!("g(0,L) <= L. Continuem"));
+                log.append_to_last_entry(format!(" --> SI"));
                 // Augmentem la L actual en període
                 l += t.get_period();
             }
