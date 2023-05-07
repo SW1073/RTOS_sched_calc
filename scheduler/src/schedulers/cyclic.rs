@@ -134,14 +134,25 @@ impl CheckSchedulable for CyclicScheduler {
         log.append_log(log_dnc);
         log.add_event(format!("Com que el temps de comput màxim és menor que el mínim deadline, és possible trobar frames secuandaris en el rang."));
 
-        // Trobes les K per les que H=k*Ts
-        log.add_info(format!("De fet, gracies a la equivalencia H = k*Ts, sabem que:"));
-        let kd = hyper_period/min_d;
-        let kc = (hyper_period as f64)/max_c;
-        log.add_info(format!("H = k*Ts = {kd:.2} * {min_d:.2} = {hyper_period}"));
-        log.add_info(format!("H = k*Ts = {kc:.2} * {max_c:.2} = {hyper_period}"));
+        // Secondary frames
+        let mut secondary_frames_vec: Vec<usize> = vec![];
+        let mut current_secondary_frame = max_c.ceil() as usize;
+
+        while current_secondary_frame <= min_d {
+            if hyper_period % current_secondary_frame == 0 {
+                secondary_frames_vec.push(current_secondary_frame);
+            }
+            current_secondary_frame += 1;
+        }
+
+        // No hi ha secondary_frames
+        if secondary_frames_vec.is_empty() {
+            log.add_error(format!("No s'ha trobat cap frame secundari vàlid"));
+            return SchedulabilityResult::NotSchedulable(Some(log));
+        }
 
         // return true if every check before was ok
+        log.add_info(format!("Seocndary frames vàlids trobats dins del rang: {secondary_frames_vec:?}"));
         SchedulabilityResult::Schedulable(Some(log))
     }
     
