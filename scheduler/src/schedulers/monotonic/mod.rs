@@ -81,7 +81,7 @@ trait CheckRTA : GetTasks {
 
         let mut prev_tasks: Vec<(f64,f64)> = vec![]; // Detalls de les tasks amb mes prioritat que la actual
         for (priority, task) in self.get_tasks() {
-            log.add_event(format!("----- Task a evaluar: {} -----", priority.unwrap()));
+            log.add_event(format!("----- Prioritat de la Task a evaluar: {} -----", priority.unwrap()));
             let d = task.get_deadline();
             let mut w; // El W(n) actual
             let mut prev_ws: Vec<f64> = vec![]; // Els W calculats previament
