@@ -72,6 +72,8 @@ impl CheckSchedulable for RateMonotonicScheduler {
         log.add_event(format!("Asignem prioritats a les tasques"));
         self.sort_n_assign();
 
+        log.add_info(format!("Tasques ordenades: {:#?}", self.get_tasks()));
+
         // Comprovem la SC1
         log.add_event(format!("Comprovem la Sufficient Condition 1"));
         let (result_sc1, log_sc1) = self.check_sc1();
