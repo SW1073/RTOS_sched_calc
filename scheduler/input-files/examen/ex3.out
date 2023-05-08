@@ -1,0 +1,33 @@
+Schedulers disponibles:
+1. C   -> Cíclic
+2. RM  -> Rate Monotnic
+3. DM  -> Deadline Monotonic
+4. EDF -> Eadrliest Deadline First
+Quin scheduler vols utilitzar?
+Quantes tasques vols afegir a l'scheduler?
+Introdueix el computing_time, deadline i periode separats per espais per a cada tasca a continuació:
+-- Tasca 1 --
+-> -- Tasca 2 --
+-> -- Tasca 3 --
+-> -- Tasca 4 --
+-> El sistema NO es planificable.
+Log:
+Utilització: 0.46
+Asignem prioritats a les tasques
+Comprovem el Response Time Analysis.
+----- Prioritat de la Task a evaluar: 4 -----
+ W:2.00 <= D:12?? --> SI
+----- Prioritat de la Task a evaluar: 3 -----
+ W:3.00 <= D:14?? --> SI
+ W:5.00 <= D:14?? --> SI
+ W:5.00 <= D:14?? --> SI W apareix 2 cops, pasem a seguent task!
+----- Prioritat de la Task a evaluar: 2 -----
+ W:4.00 <= D:18?? --> SI
+ W:9.00 <= D:18?? --> SI
+ W:9.00 <= D:18?? --> SI W apareix 2 cops, pasem a seguent task!
+----- Prioritat de la Task a evaluar: 1 -----
+ W:15.00 <= D:25?? --> SI
+ W:24.00 <= D:25?? --> SI
+ W:26.00 <= D:25??
+NO! W és més gran que D! RTA falla
+El Response Time Analysis ha fallat

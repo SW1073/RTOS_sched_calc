@@ -1,0 +1,46 @@
+Schedulers disponibles:
+1. C   -> Cíclic
+2. RM  -> Rate Monotnic
+3. DM  -> Deadline Monotonic
+4. EDF -> Eadrliest Deadline First
+Quin scheduler vols utilitzar?
+Quantes tasques vols afegir a l'scheduler?
+Introdueix el computing_time, deadline i periode separats per espais per a cada tasca a continuació:
+-- Tasca 1 --
+-> -- Tasca 2 --
+-> -- Tasca 3 --
+-> -- Tasca 4 --
+-> El sistema SI es planificable
+Log:
+Hi ha tasques amb periode menor que deadline
+Cal mirar el PDC
+Utilization Factor: 0.92
+Hyperperiod: 900
+L*: 340.07 
+L* <= Hyperperiod. Usem L*
+Els deadlines aboluts son: [5, 20, 45, 50, 55, 80, 90, 105, 110, 135, 140, 155, 170, 190, 200, 205, 225, 230, 255, 260, 290, 305, 315, 320]
+g(0,5) = 3.50 <= 5?? --> SI
+g(0,20) = 4.40 <= 20?? --> SI
+g(0,45) = 42.40 <= 45?? --> SI
+g(0,50) = 43.30 <= 50?? --> SI
+g(0,55) = 46.80 <= 55?? --> SI
+g(0,80) = 47.70 <= 80?? --> SI
+g(0,90) = 87.70 <= 90?? --> SI
+g(0,105) = 91.20 <= 105?? --> SI
+g(0,110) = 92.10 <= 110?? --> SI
+g(0,135) = 130.10 <= 135?? --> SI
+g(0,140) = 131.00 <= 140?? --> SI
+g(0,155) = 134.50 <= 155?? --> SI
+g(0,170) = 135.40 <= 170?? --> SI
+g(0,190) = 175.40 <= 190?? --> SI
+g(0,200) = 176.30 <= 200?? --> SI
+g(0,205) = 179.80 <= 205?? --> SI
+g(0,225) = 217.80 <= 225?? --> SI
+g(0,230) = 218.70 <= 230?? --> SI
+g(0,255) = 222.20 <= 255?? --> SI
+g(0,260) = 223.10 <= 260?? --> SI
+g(0,290) = 264.00 <= 290?? --> SI
+g(0,305) = 267.50 <= 305?? --> SI
+g(0,315) = 305.50 <= 315?? --> SI
+g(0,320) = 306.40 <= 320?? --> SI
+Es compleix el PDC. El sistema és planificable
