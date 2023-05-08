@@ -1,3 +1,8 @@
+====================
+|Eloi Merino Serrat|
+|08/05/2023        |
+====================
+
 # Exercici 1
 1.a.
     El factor d'utilització és 0.45
@@ -9,7 +14,7 @@
     El conjunt de periodes secundaris és: {4, 5, 8, 10}
 
 1.d.
-    *resposta a la imatge adjunta*
+    **No està fet**
     
 
 # Exercici 2
@@ -124,8 +129,43 @@
         els deadlines a totes les tasks.
 
     6.e.
-        *resposta a la imatge adjunta*
+        **No està fet**
 
 
 # Exercici 7
-qq
+    7.1.
+        Funcionalitats: 
+            - Detectar obstacles i evitar-los.
+            - Seguir una ruta grabada (GPS).
+
+
+
+    7.2.
+        El temps entre dada i dada (o el temps que triga en recorrer 10º) 
+        és 10 graus per dada * 1/3600 segons per grau = 0.00278 segons per dada,
+        o uns 2.78 milisegons.
+
+        Podem dissenyar una tasca attached a un interrupt que llegeixi les dades que ens
+        arriben del Lidar. Aquesta tasca podria ser aperiodica i tindria un deadline de 2.78ms.
+
+    7.3.
+        Si la velocitat màxima son 25kmh -> 6.94m/s, i hem de frenar en 10 metres,
+        el Deadline de la tasca sera el temps que triguem en recorrer 10m:
+            10m : 6.94m/s = 1.44 segons
+
+    7.4.
+        Es pot dividir la tasca en subtasques, que es puguin treure de cotexte i puguin executarse
+        altres tasques entremig.
+
+    7.5.
+        Amb un filtre pasabaixes.
+
+    7.6.
+    7.7.
+    7.8.
+    7.9.
+
+
+
+
+
