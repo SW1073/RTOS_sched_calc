@@ -67,7 +67,7 @@ impl CheckSchedulable for DeadlineMonotonicScheduler {
         log.add_event(format!("Asignem prioritats a les tasques"));
         self.sort_n_assign();
         
-        log.add_info(format!("Tasques ordenades: {:#?}", self.get_tasks()));
+        // log.add_info(format!("Tasques ordenades: {:#?}", self.get_tasks()));
 
         // Comprovem el RTA
         log.add_event(format!("Comprovem el Response Time Analysis."));

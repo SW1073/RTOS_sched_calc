@@ -72,7 +72,7 @@ impl CheckSchedulable for RateMonotonicScheduler {
         log.add_event(format!("Asignem prioritats a les tasques"));
         self.sort_n_assign();
 
-        log.add_info(format!("Tasques ordenades: {:#?}", self.get_tasks()));
+        // log.add_info(format!("Tasques ordenades: {:#?}", self.get_tasks()));
 
         // Comprovem la SC1
         log.add_event(format!("Comprovem la Sufficient Condition 1"));
@@ -80,9 +80,11 @@ impl CheckSchedulable for RateMonotonicScheduler {
         log.append_log(log_sc1);
         if result_sc1 {
             log.add_event(format!("La Sufficient Condition 1 es compleix"));
-            return SchedulabilityResult::Schedulable(Some(log));
+            // return SchedulabilityResult::Schedulable(Some(log));
         }
-        log.add_error(format!("La Sufficient Condition 1 ha fallat"));
+        else {
+            log.add_error(format!("La Sufficient Condition 1 ha fallat"));
+        }
         
         // Comprovem la SC2
         log.add_event(format!("Comprovem la Sufficient Condition 2"));
@@ -90,10 +92,11 @@ impl CheckSchedulable for RateMonotonicScheduler {
         log.append_log(log_sc2);
         if result_sc2 {
             log.add_event(format!("La Sufficient Condition 2 es compleix"));
-            return SchedulabilityResult::Schedulable(Some(log));
+            // return SchedulabilityResult::Schedulable(Some(log));
         }
-        log.add_error(format!("La Sufficient Condition 2 ha fallat"));
-
+        else {
+            log.add_error(format!("La Sufficient Condition 2 ha fallat"));
+        }
         // Comprovem el RTA
         log.add_event(format!("Comprovem el Response Time Analysis."));
         let (result_rta, log_rta) = self.check_rta();
