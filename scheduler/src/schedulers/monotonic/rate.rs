@@ -71,6 +71,9 @@ impl CheckSchedulable for RateMonotonicScheduler {
         // Creem un log
         let mut log = Log::new();
 
+        let u = self.get_utilization();
+        log.add_info(format!("Utilització: {u:.2}",));
+
         // Ordenem
         log.add_event(format!("Asignem prioritats a les tasques"));
         self.sort_n_assign();
