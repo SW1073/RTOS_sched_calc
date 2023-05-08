@@ -13,6 +13,7 @@ use crate::{
             CheckSC1,
             CheckSC2,
             CheckRTA, 
+            GetUtilizationFactor
         },
     },
 };
@@ -54,6 +55,8 @@ impl AssignPriorities for RateMonotonicScheduler {
         self.tasks.sort_by(|(_,a),(_,b)| a.get_period().cmp(&b.get_period()));
     }
 }
+
+impl GetUtilizationFactor for RateMonotonicScheduler {}
 
 // Implementacions default de les diferents funcions de checking
 impl CheckSC1 for RateMonotonicScheduler {}

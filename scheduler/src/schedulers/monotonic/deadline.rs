@@ -11,9 +11,11 @@ use crate::{
             GetTasks,
             AssignPriorities,
             CheckRTA,
+            GetUtilizationFactor,
         },
     },
 };
+
 
 #[derive(Debug)]
 pub struct DeadlineMonotonicScheduler {
@@ -53,6 +55,8 @@ impl AssignPriorities for DeadlineMonotonicScheduler {
     }
 }
 
+impl GetUtilizationFactor for DeadlineMonotonicScheduler {}
+
 // Implementacions default de les diferents funcions de checking
 // (Només el RTA és necesari en aquest cas)
 impl CheckRTA for DeadlineMonotonicScheduler {}
@@ -64,6 +68,9 @@ impl CheckSchedulable for DeadlineMonotonicScheduler {
     fn is_schedulable(&mut self) -> SchedulabilityResult {
         let mut log = Log::new();
         
+        let u = self.get_utilization();
+        log.add_info(format!("Utilització: {u:.2}",));
+
         log.add_event(format!("Asignem prioritats a les tasques"));
         self.sort_n_assign();
         

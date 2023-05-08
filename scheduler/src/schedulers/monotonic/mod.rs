@@ -121,3 +121,9 @@ trait CheckRTA : GetTasks {
         (true, log)
     }
 }
+
+trait GetUtilizationFactor : GetTasks {
+    fn get_utilization(&self) -> f64 {
+        self.get_tasks().iter().map(|(_priority, task)| task.get_computing_time()).sum()
+    }
+}

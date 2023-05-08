@@ -1,0 +1,39 @@
+Schedulers disponibles:
+1. C   -> Cíclic
+2. RM  -> Rate Monotnic
+3. DM  -> Deadline Monotonic
+4. EDF -> Eadrliest Deadline First
+Quin scheduler vols utilitzar?
+Quantes tasques vols afegir a l'scheduler?
+Introdueix el computing_time, deadline i periode separats per espais per a cada tasca a continuació:
+-- Tasca 1 --
+-> -- Tasca 2 --
+-> -- Tasca 3 --
+-> -- Tasca 4 --
+-> -- Tasca 5 --
+-> -- Tasca 6 --
+-> -- Tasca 7 --
+-> El sistema SI es planificable
+Log:
+El factor d'utilitzacio U = 0.83
+U <= 1.0: continuem mirant condicions
+Hiperperiode H = 4200
+A continuació, trobem el periode secundari:
+El temps de comput màxim és: 25
+El deadline mínim és: 10
+Minimum Deadline <= Maximum Computing Time
+Dividim totes les tasques amb max Computing Time
+-> Tasca (25, 100, 100) trobada per a dividir
+Tasca dividida: (12.5, 100, 100)
+El temps de comput màxim és: 12.5
+El deadline mínim és: 10
+Minimum Deadline <= Maximum Computing Time
+Dividim totes les tasques amb max Computing Time
+-> Tasca (12.5, 100, 100) trobada per a dividir
+Tasca dividida: (6.25, 100, 100)
+-> Tasca (12.5, 100, 100) trobada per a dividir
+Tasca dividida: (6.25, 100, 100)
+El temps de comput màxim és: 6.25
+El deadline mínim és: 10
+Com que el temps de comput màxim és menor que el mínim deadline, és possible trobar frames secuandaris en el rang.
+Seocndary frames vàlids trobats dins del rang: [7, 8, 10]
