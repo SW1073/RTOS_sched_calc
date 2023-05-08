@@ -1,0 +1,24 @@
+Schedulers disponibles:
+1. C   -> Cíclic
+2. RM  -> Rate Monotnic
+3. DM  -> Deadline Monotonic
+4. EDF -> Eadrliest Deadline First
+Quin scheduler vols utilitzar?
+Quantes tasques vols afegir a l'scheduler?
+Introdueix el computing_time, deadline i periode separats per espais per a cada tasca a continuació:
+-- Tasca 1 --
+-> -- Tasca 2 --
+-> -- Tasca 3 --
+-> -- Tasca 4 --
+-> El sistema SI es planificable
+Log:
+Hi ha tasques amb periode menor que deadline
+Cal mirar el PDC
+Utilization Factor: 0.95
+Hyperperiod: 10
+L*: 2.00 
+L* <= Hyperperiod. Usem L*
+Els deadlines aboluts son: [1, 2]
+g(0,1) = 0.50 <= 1?? --> SI
+g(0,2) = 1.50 <= 2?? --> SI
+Es compleix el PDC. El sistema és planificable

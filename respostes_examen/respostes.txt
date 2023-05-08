@@ -1,0 +1,131 @@
+# Exercici 1
+1.a.
+    El factor d'utilització és 0.45
+
+1.b.
+    L'Hiperperiode és 40
+
+1.c.
+    El conjunt de periodes secundaris és: {4, 5, 8, 10}
+
+1.d.
+    *resposta a la imatge adjunta*
+    
+
+# Exercici 2
+2.a.
+    El factor d'utilització és 0.83
+
+2.b.
+    L'Hiperperiode és 4200
+
+2.c.
+    No existeix un conjunt de periodes secundaris, ja que actualment el maximum computing
+    time (25) és major que el minimum Deadline (10). Per tant no existeixen valor en el
+    rang [max_c, min_d].
+
+2.d.
+    Si dividim la t7 en 4 tasques de computing time = 6.25, podem planificar el sistema,
+    ja que el minimum Deadline (10) és major al maxim computing time (6.25).
+    El conjunt de periodes secundaris és: {7, 8, 10}
+
+# Exercici 3
+    3.a.
+        El factor d'utilització és 0.46
+
+    3.b.
+        t1: 2
+        t2: 5
+        t3: 9
+        t4: 26 <- FALLA el RTA, doncs 26 > 25(Deadline)
+        
+
+# Exercici 4
+    4.a.
+        El factor d'utilització és 0.75
+    
+    4.b.
+        t1: 4.4
+        t2: 3.3
+        t3: 6.6
+        t4: 11
+        t5: 31.9
+        t6: 17.6
+
+# Exercici 5
+    5.a.
+        El factor d'utilització és 0.92
+
+    5.b.
+        El temps fins on s'ha de fer l'anàlisis és el mínim entre Hiperperiode i L*
+        H = 900
+        L* = 340.07
+        Per tant, fem l'anàlisi fins a L*
+    
+    5.c.
+        El conjunt de deadlines absoluts és:
+        {5, 20, 45, 50, 55, 80, 90, 105, 110, 135, 140, 155, 170, 190, 200, 205, 225, 230, 255, 260, 290, 305, 315, 320}
+
+    5.d.
+        Fent el PDC, podem trobar si les tasques totes les tasques tenen garantit el deadline:
+        Analitzem per a cada deadline absoluta L el g(0,L), i comprovem que g(0,L) <= L:
+
+            g(0,5) = 3.50 <= 5?? --> SI
+            g(0,20) = 4.40 <= 20?? --> SI
+            g(0,45) = 42.40 <= 45?? --> SI
+            g(0,50) = 43.30 <= 50?? --> SI
+            g(0,55) = 46.80 <= 55?? --> SI
+            g(0,80) = 47.70 <= 80?? --> SI
+            g(0,90) = 87.70 <= 90?? --> SI
+            g(0,105) = 91.20 <= 105?? --> SI
+            g(0,110) = 92.10 <= 110?? --> SI
+            g(0,135) = 130.10 <= 135?? --> SI
+            g(0,140) = 131.00 <= 140?? --> SI
+            g(0,155) = 134.50 <= 155?? --> SI
+            g(0,170) = 135.40 <= 170?? --> SI
+            g(0,190) = 175.40 <= 190?? --> SI
+            g(0,200) = 176.30 <= 200?? --> SI
+            g(0,205) = 179.80 <= 205?? --> SI
+            g(0,225) = 217.80 <= 225?? --> SI
+            g(0,230) = 218.70 <= 230?? --> SI
+            g(0,255) = 222.20 <= 255?? --> SI
+            g(0,260) = 223.10 <= 260?? --> SI
+            g(0,290) = 264.00 <= 290?? --> SI
+            g(0,305) = 267.50 <= 305?? --> SI
+            g(0,315) = 305.50 <= 315?? --> SI
+            g(0,320) = 306.40 <= 320?? --> SI
+        
+        Com que totes els deadlines absoluts compleixen aquesta condició, podem garantir tots
+        els deadlines a totes les tasks.
+
+
+# Exercici 6
+    6.a.
+        El factor d'utilització és 0.95
+    
+    6.b.
+        El temps fins on s'ha de fer l'anàlisis és el mínim entre Hiperperiode i L*
+        H = 10
+        L* = 2
+        Per tant, fem l'anàlisi fins a L*
+
+    6.c.
+        El conjunt de deadlines absoluts és:
+        {1, 2}
+
+    6.d.
+        Fent el PDC, podem trobar si les tasques totes les tasques tenen garantit el deadline:
+        Analitzem per a cada deadline absoluta L el g(0,L), i comprovem que g(0,L) <= L:
+
+            g(0,1) = 0.5 <= 1?? --> SI
+            g(0,2) = 1.5 <= 2?? --> SI
+        
+        Com que totes els deadlines absoluts compleixen aquesta condició, podem garantir tots
+        els deadlines a totes les tasks.
+
+    6.e.
+        *resposta a la imatge adjunta*
+
+
+# Exercici 7
+qq
